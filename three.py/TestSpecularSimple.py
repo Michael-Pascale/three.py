@@ -29,6 +29,7 @@ class TestSpecularSimple(Base):
 		self.camera.transform.setPosition(0,1,5)
 		self.cameraControls = FirstPersonController(self.input,self.camera)
 		
+		#widthResolution = 16, heightResolution = 16
 		geometry = BoxGeometry()
 		material = SpecularMaterial()
 		mesh = Mesh(geometry,material)

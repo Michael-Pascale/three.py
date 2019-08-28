@@ -3,62 +3,31 @@ from core import OpenGLUtils
 from material import Material
 
 #This material demonstrates specular lighting
+#tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
 class SpecularMaterial(Material):
 	def __init__(self):
 		#Code for the vertex shader
-		vsCode = """
-		// required ins, outs and uniforms for 
-		in vec3 vertexPosition;
-        in vec2 vertexUV;
-        in vec3 vertexNormal;
-        in vec3 vertexColor;
-        
-        out vec3 position;
-        out vec2 UV;
-        out vec3 normal; 
-        out vec3 vColor;
-        
-        uniform mat4 projectionMatrix;
-        uniform mat4 viewMatrix;
-        uniform mat4 modelMatrix;
-		
-		
-        uniform bool useFog;
-        out float cameraDistance; 
-		
-        // not going to work with shadows right now
-        //uniform bool receiveShadow;
-        
-        // assume that at most one light casts shadows
-        //   and its values have been passed in here
-        uniform mat4 shadowProjectionMatrix;
-        uniform mat4 shadowViewMatrix;
-        out vec4 positionFromShadowLight;
-		
-		void main(){
-			// out values being sent to fragment shader
-            position = vec3( modelMatrix * vec4(vertexPosition, 1) );
-            UV = vertexUV;
-            normal = normalize(mat3(modelMatrix) * vertexNormal); // normalize in case of model scaling
-            vColor = vertexColor;
-			
-			
-			gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
-		}
-		"""
 		
 		vsCode = """
 		in vec3 vertexPosition;
 		in vec3 vertexUV;
+		in vec3 vertexNormal;
 		
 		out vec3 position;
+		out vec3 Normal;
 		uniform mat4 projectionMatrix;
 		uniform mat4 viewMatrix;
 		uniform mat4 modelMatrix;
 		
+		out vec3 FragPos;
+		
 		void main(){
 			position = vec3( modelMatrix * vec4(vertexPosition, 1) );
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
+			//Normal = vertexNormal;
+			//This line seems inefficient
+			Normal = mat3(transpose(inverse(modelMatrix))) * vertexNormal;
+			FragPos = vec3(modelMatrix * vec4(vertexPosition, 1));
 		}
 		"""
 		
@@ -101,14 +70,28 @@ class SpecularMaterial(Material):
 		
 		fsCode = """
 		in vec3 position;
+		in vec3 Normal;
+		in vec3 FragPos;
 		
 		void main(){
+			//TODO: move declared variables to uniforms when convenient/needed
+			
+			//ambient light
+			vec3 lightPosition = vec3(1.5,3.0,2.0);
 			vec3 lightColor = vec3(0.0,0.0,1.0);
 			float ambientStrength = 0.2;
 			vec3 ambient = ambientStrength * lightColor;
 			
+			//directional light(currently only 1)
+			vec3 norm = normalize(Normal);
+			vec3 lightDir = normalize(lightPosition - FragPos);
+			float diff = max(dot(norm, lightDir), 0.0);
+			vec3 diffuse = diff * lightColor;
+			
+			//calculate color based on light results
 			vec3 objectColor = vec3(1.0,1.0,1.0);
-			vec3 result = ambient * objectColor;
+			vec3 result = (ambient + diffuse) * objectColor;
+			//vec3 result = objectColor;
 			gl_FragColor = vec4(result, 1.0);
 		}
 		"""
