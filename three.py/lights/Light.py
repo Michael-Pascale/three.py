@@ -18,6 +18,7 @@ class Light(Object3D):
         self.uniformList.addUniform( Uniform("bool", self.name + ".isAmbient", 0),     indexName="isAmbient" )
         self.uniformList.addUniform( Uniform("bool", self.name + ".isDirectional", 0), indexName="isDirectional" )
         self.uniformList.addUniform( Uniform("bool", self.name + ".isPoint", 0),       indexName="isPoint" )
+        self.uniformList.addUniform(Uniform("bool", self.name + ".isSpecular", 0),    indexName="isSpecular")
         
         # default light color
         self.uniformList.addUniform( Uniform("float", self.name + ".strength", strength), indexName="strength" )

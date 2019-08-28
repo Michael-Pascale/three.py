@@ -49,6 +49,7 @@ class SpecularMaterial(Material):
 			bool isAmbient;
 			bool isDirectional;
 			bool isPoint;
+			bool isSpecular;//should be mutually exclusive with isAmbient
 			
 			//used by all lights
 			float strength;
@@ -80,11 +81,16 @@ class SpecularMaterial(Material):
 			vec3 diffuse = diff * lightColor * diffuseStrength;
 			
 			//specular light
-			float specularStrength = 0.7;
-			//vec3 viewDir = normalize(viewPos - FragPos);
-			vec3 reflectDir = reflect(-lightDir, norm);
-			float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-			vec3 specular = specularStrength * spec * lightColor;
+			vec3 specular;
+			if(light0.isSpecular){
+				float specularStrength = 0.7;
+				//vec3 viewDir = normalize(viewPos - FragPos);
+				vec3 reflectDir = reflect(-lightDir, norm);
+				float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
+				specular = specularStrength * spec * lightColor;
+			}else{
+				specular = vec3(0.0,0.0,0.0);
+			}
 			
 			//calculate color based on light results
 			vec3 objectColor = vec3(0.0,0.0,1.0);
