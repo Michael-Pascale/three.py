@@ -30,14 +30,16 @@ class TestSpecularSimple(Base):
 		self.cameraControls = FirstPersonController(self.input,self.camera)
 		
 		#widthResolution = 16, heightResolution = 16
-		geometry = BoxGeometry()
+		#problem with normals in BoxGeometry?
+		geometry = SphereGeometry()
 		material = SpecularMaterial()
-		mesh = Mesh(geometry,material)
+		self.mesh = Mesh(geometry,material)
 		
-		self.scene.add(mesh)
+		self.scene.add(self.mesh)
 		
 	def update(self):
 		self.cameraControls.update()
+		self.mesh.material.setUniform('vec3','viewPos',self.camera.transform.getPosition())
 		
 		if self.input.resize():
 			size = self.input.getWindowSize()
