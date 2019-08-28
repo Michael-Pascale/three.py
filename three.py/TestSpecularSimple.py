@@ -8,6 +8,7 @@ from lights import *
 from physics import *
 import random
 import numpy as np
+import math
 
 #The following demo does not use the Light materials from three py, but
 #a much more simple shader just to show the specular lighting in action
@@ -24,6 +25,11 @@ class TestSpecularSimple(Base):
 		
 		self.scene = Scene()
 		
+		#add a point light to the screen
+		self.light = PointLight(color=[1,1,1], position = [3,2,0])
+		self.scene.add(self.light)
+		self.scene.add(PointLightHelper(self.light, radius=0.1))
+		
 		self.camera = PerspectiveCamera()
 		self.camera.transform.setPosition(0,1,6)
 		self.camera.transform.lookAt(0,0,0)
@@ -32,15 +38,29 @@ class TestSpecularSimple(Base):
 		
 		#widthResolution = 16, heightResolution = 16
 		#problem with normals in BoxGeometry?
-		geometry = BoxGeometry(widthResolution = 16, heightResolution = 16)
+		geometry = SphereGeometry()
 		material = SpecularMaterial()
 		self.mesh = Mesh(geometry,material)
 		
 		self.scene.add(self.mesh)
 		
+		
+		#light position uniform
+		#self.lightPos = (0.0,3.0,4.0)
+		self.time = 0
+		self.dt = 1/60.0
+		
 	def update(self):
 		self.cameraControls.update()
+		
+		
+		self.time += self.dt
+		#update position of the light
+		#self.lightPos = (3*math.cos(self.time*1),0.25,3*math.sin(self.time*1))
+		self.light.transform.rotateY(0.013, Matrix.GLOBAL)
 		self.mesh.material.setUniform('vec3','viewPos',self.camera.transform.getPosition())
+		#self.mesh.material.setUniform('vec3','lightPosition',np.asarray(self.lightPos))
+		
 		
 		#get the cameras relative forward
 		rotationMat = self.camera.transform.getRotationMatrix()

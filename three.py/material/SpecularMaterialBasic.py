@@ -8,9 +8,6 @@ class SpecularMaterial(Material):
 	def __init__(self):
 		#Code for the vertex shader
 		
-		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
-		#rather than simple uniforms only
-		
 		vsCode = """
 		in vec3 vertexPosition;
 		in vec3 vertexUV;
@@ -42,26 +39,7 @@ class SpecularMaterial(Material):
 		
 		uniform vec3 viewPos;
 		uniform vec3 viewDir;
-		//uniform vec3 lightPosition;
-		
-		//struct for the light objects
-		struct Light{
-			bool isAmbient;
-			bool isDirectional;
-			bool isPoint;
-			
-			//used by all lights
-			float strength;
-			vec3 color;
-			
-			//used by point lights only
-			vec3 position;
-			
-			//used by directional lights only
-			vec3 direction;
-		};
-		
-		uniform Light light0;//using nomenclature of three py for the lights
+		uniform vec3 lightPosition;
 		
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
@@ -72,10 +50,10 @@ class SpecularMaterial(Material):
 			float ambientStrength = 0.2;
 			vec3 ambient = ambientStrength * lightColor;
 			
-			//point light(currently only 1)(diffuse)
+			//directional light(currently only 1)(diffuse)
 			float diffuseStrength = 0.5;
 			vec3 norm = normalize(Normal);
-			vec3 lightDir = normalize(light0.position - FragPos);
+			vec3 lightDir = normalize(lightPosition - FragPos);
 			float diff = max(dot(norm, lightDir), 0.0);
 			vec3 diffuse = diff * lightColor * diffuseStrength;
 			

@@ -4,6 +4,7 @@ from material.Material import *
 from material.SurfaceBasicMaterial import *
 from material.SurfaceLightMaterial import *
 from material.SurfacePhongMaterial import *
+from material.SpecularMaterialBasic import *
 from material.SpecularMaterial import *
 
 # Line materials
@@ -19,3 +20,4 @@ from material.SpriteMaterial import *
 
 # rendering shadows
 from material.ShadowMaterial import *
+
