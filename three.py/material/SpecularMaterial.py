@@ -74,12 +74,13 @@ class SpecularMaterial(Material):
 		in vec3 FragPos;
 		
 		uniform vec3 viewPos;
+		uniform vec3 viewDir;
 		
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
 			
 			//ambient light
-			vec3 lightPosition = vec3(0.0,0.0,4.0);
+			vec3 lightPosition = vec3(0.0,3.0,4.0);
 			vec3 lightColor = vec3(1.0,1.0,1.0);
 			float ambientStrength = 0.2;
 			vec3 ambient = ambientStrength * lightColor;
@@ -92,8 +93,8 @@ class SpecularMaterial(Material):
 			vec3 diffuse = diff * lightColor * diffuseStrength;
 			
 			//specular light
-			float specularStrength = 0.5;
-			vec3 viewDir = normalize(viewPos - FragPos);
+			float specularStrength = 0.7;
+			//vec3 viewDir = normalize(viewPos - FragPos);
 			vec3 reflectDir = reflect(-lightDir, norm);
 			float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 			vec3 specular = specularStrength * spec * lightColor;

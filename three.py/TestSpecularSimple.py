@@ -7,6 +7,7 @@ from components import *
 from lights import *
 from physics import *
 import random
+import numpy as np
 
 #The following demo does not use the Light materials from three py, but
 #a much more simple shader just to show the specular lighting in action
@@ -31,7 +32,7 @@ class TestSpecularSimple(Base):
 		
 		#widthResolution = 16, heightResolution = 16
 		#problem with normals in BoxGeometry?
-		geometry = SphereGeometry()
+		geometry = BoxGeometry(widthResolution = 16, heightResolution = 16)
 		material = SpecularMaterial()
 		self.mesh = Mesh(geometry,material)
 		
@@ -40,6 +41,13 @@ class TestSpecularSimple(Base):
 	def update(self):
 		self.cameraControls.update()
 		self.mesh.material.setUniform('vec3','viewPos',self.camera.transform.getPosition())
+		
+		#get the cameras relative forward
+		rotationMat = self.camera.transform.getRotationMatrix()
+		globalForward = (0.0,0.0,1.0)
+		cameraRelForward = rotationMat.dot(globalForward)
+		self.mesh.material.setUniform('vec3','viewDir',cameraRelForward)
+		#print(cameraRelForward)
 		
 		if self.input.resize():
 			size = self.input.getWindowSize()
