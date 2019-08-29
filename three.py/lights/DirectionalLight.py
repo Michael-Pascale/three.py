@@ -9,7 +9,7 @@ from math import acos
 class DirectionalLight(Light):
 
     def __init__(self, position=[0,1,0], color=[1,1,1], strength=1, direction=[0,-1,0]):
-        super().__init__(position=position, color=color, strength=strength)
+        super().__init__(position=position, color=color, strength=strength, isSpecular=0)
 
         self.uniformList.setUniformValue("isDirectional", 1)
 
