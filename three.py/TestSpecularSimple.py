@@ -27,7 +27,7 @@ class TestSpecularSimple(Base):
 		
 		#add a point light to the screen
 		#self.light = PointLight(color=[1,1,1], position = [3,2,0],isSpecular=1)
-		self.light = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[1,1,1],isSpecular=1)
+		self.light = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1],isSpecular=1)
 		self.scene.add(self.light)
 		self.scene.add(PointLightHelper(self.light, radius=0.1))
 		

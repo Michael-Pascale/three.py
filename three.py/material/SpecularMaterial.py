@@ -84,8 +84,8 @@ class SpecularMaterial(Material):
 				diffuse = diff * lightColor * diffuseStrength;
 			}else if(light0.isDirectional){
 				float diffuseStrength = 0.5;
-				lightDir = light0.direction;
-				float diff = max(dot(norm,lightDir),0.0);
+				lightDir = -light0.direction;
+				float diff = max(dot(norm, lightDir),0.0);
 				diffuse = diff * lightColor * diffuseStrength;
 			}else{
 				diffuse = vec3(1.0,1.0,0.0);
