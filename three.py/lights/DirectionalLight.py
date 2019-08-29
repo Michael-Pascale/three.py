@@ -8,10 +8,11 @@ from math import acos
 
 class DirectionalLight(Light):
 
-    def __init__(self, position=[0,1,0], color=[1,1,1], strength=1, direction=[0,-1,0]):
-        super().__init__(position=position, color=color, strength=strength, isSpecular=0)
+    def __init__(self, position=[0,1,0], color=[1,1,1], strength=1, direction=[0,-1,0], isSpecular=0):
+        super().__init__(position=position, color=color, strength=strength)
 
         self.uniformList.setUniformValue("isDirectional", 1)
+        self.uniformList.setUniformValue("isSpecular",isSpecular)
 
         # DEFAULT vector is totally arbitrary.
         # TODO: allow direction to be parallel to DEFAULT vector as well

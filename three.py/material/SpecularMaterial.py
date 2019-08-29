@@ -82,7 +82,6 @@ class SpecularMaterial(Material):
 				lightDir = normalize(light0.position - FragPos);
 				float diff = max(dot(norm, lightDir), 0.0);
 				diffuse = diff * lightColor * diffuseStrength;
-				objectColor = vec3(0.0,1.0,0.0);
 			}else if(light0.isDirectional){
 				float diffuseStrength = 0.5;
 				lightDir = light0.direction;
@@ -95,10 +94,10 @@ class SpecularMaterial(Material):
 			//specular light
 			vec3 specular;
 			if(light0.isSpecular){
-				float specularStrength = 0.7;
+				float specularStrength = 0.5;
 				//vec3 viewDir = normalize(viewPos - FragPos);
 				vec3 reflectDir = reflect(-lightDir, norm);
-				float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
+				float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 				specular = specularStrength * spec * lightColor;
 				//objectColor = lightDir;
 				//objectColor = vec3(1.0,0.0,0.0);
@@ -107,10 +106,6 @@ class SpecularMaterial(Material):
 			}
 			
 			//calculate color based on light results
-			
-			if(light0.isDirectional){
-				objectColor = vec3(1.0,0.0,0.0);
-			}
 			vec3 result = (ambient + diffuse + specular) * objectColor;
 			//vec3 result = objectColor;
 			gl_FragColor = vec4(result, 1.0);
