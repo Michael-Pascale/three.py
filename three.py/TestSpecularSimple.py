@@ -26,8 +26,8 @@ class TestSpecularSimple(Base):
 		self.scene = Scene()
 		
 		#add a point light to the screen
-		#self.light = PointLight(color=[1,1,1], position = [3,2,0],isSpecular=1)
-		self.light = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1],isSpecular=1)
+		self.light = PointLight(color=[1,1,1], position = [3,2,0],isSpecular=1)
+		#self.light = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1],isSpecular=1)
 		self.scene.add(self.light)
 		self.scene.add(PointLightHelper(self.light, radius=0.1))
 		
@@ -58,7 +58,7 @@ class TestSpecularSimple(Base):
 		self.time += self.dt
 		#update position of the light
 		#self.lightPos = (3*math.cos(self.time*1),0.25,3*math.sin(self.time*1))
-		#self.light.transform.rotateY(0.013, Matrix.GLOBAL)
+		self.light.transform.rotateY(0.013, Matrix.GLOBAL)
 		self.mesh.material.setUniform('vec3','viewPos',self.camera.transform.getPosition())
 		#self.mesh.material.setUniform('vec3','lightPosition',np.asarray(self.lightPos))
 		

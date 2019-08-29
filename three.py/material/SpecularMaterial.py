@@ -66,7 +66,7 @@ class SpecularMaterial(Material):
 		
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
-			vec3 objectColor = vec3(0.0,0.0,1.0);
+			vec3 objectColor = vec3(0.0,1.0,0.0);
 			//ambient light
 			//vec3 lightPosition = vec3(0.0,3.0,4.0);
 			vec3 lightColor = vec3(1.0,1.0,1.0);
