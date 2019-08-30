@@ -48,7 +48,7 @@ class TestSpecularSimple(Base):
 		#widthResolution = 16, heightResolution = 16
 		#problem with normals in BoxGeometry?
 		geometry = SphereGeometry()
-		material = SpecularMaterial()
+		material = SpecularMaterial(color=[0,1,0])
 		self.mesh = Mesh(geometry,material)
 		
 		self.scene.add(self.mesh)

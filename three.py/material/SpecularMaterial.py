@@ -5,7 +5,7 @@ from material import Material
 #This material demonstrates specular lighting
 #tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
 class SpecularMaterial(Material):
-	def __init__(self):
+	def __init__(self, color=[1,1,1], alpha=1):
 		#Code for the vertex shader
 		
 		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
@@ -43,6 +43,9 @@ class SpecularMaterial(Material):
 		uniform vec3 viewPos;
 		uniform vec3 viewDir;
 		
+		uniform vec3 color;
+		uniform float alpha;
+		
 		//struct for the light objects
 		struct Light{
 			bool isAmbient;
@@ -68,7 +71,8 @@ class SpecularMaterial(Material):
 		
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
-			vec3 objectColor = vec3(0.0,1.0,0.0);
+			//vec3 objectColor = vec3(0.0,1.0,0.0);
+			vec3 objectColor = color;
 			
 			//variables to be used inside the loop
 			vec3 lightDir;
@@ -141,12 +145,16 @@ class SpecularMaterial(Material):
 			//vec3 result = (ambient + totalLight) * objectColor;
 			vec3 result = totalLight * objectColor;
 			//vec3 result = objectColor;
-			gl_FragColor = vec4(result, 1.0);
+			gl_FragColor = vec4(result, alpha);
 		}
 		"""
 		
 		# initialize shaders
 		super().__init__(vsCode, fsCode)
+		
+		# set default uniform values
+		self.setUniform( "vec3", "color", color )
+		self.setUniform( "float", "alpha", alpha )
 		
 		# set default render values
 		self.drawStyle = GL_TRIANGLES
