@@ -75,20 +75,19 @@ class SpecularMaterial(Material):
 			vec3 diffuse;
 			vec3 norm = normalize(Normal);
 			
-			vec3 avgLight = vec3(0.0,0.0,0.0);//the average of all the diffuse and specular lights in the scene
+			vec3 totalLight = vec3(0.0,0.0,0.0);//the total amount of light in any one spot
+			
 			Light lightArray[4] = {light0, light1, light2, light3};//array for the lights
-			int numWorkingLights = 0;
+			
 			//store the ambient light seperately, if the object is lit more than the ambience, take it away
 			vec3 ambient = vec3(0.0,0.0,0.0);
 			for(int n = 0;n < 4; n++){
 				//get the light
 				Light light = lightArray[n];
 				if(light.isAmbient){
-					avgLight = avgLight + (light.strength * light.color);
+					totalLight = totalLight + (light.strength * light.color);
 					//save value in ambient, for later calculation
 					ambient = light.strength * light.color;
-					//take 1 away from working lights, ambient should not count
-					numWorkingLights = numWorkingLights - 1;
 				}else if (light.isDirectional){
 					//diffuse lighting
 					float diffuseStrength = 0.5;
@@ -100,10 +99,10 @@ class SpecularMaterial(Material):
 					vec3 specular;
 					float specularStrength = 0.5;
 					vec3 reflectDir = reflect(-lightDir, norm);
-					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
 					specular = specularStrength * spec * light.color;
 					
-					avgLight = avgLight + (diffuse + specular);
+					totalLight = totalLight + (diffuse + specular);
 				}else if(light.isPoint){
 					//diffuse
 					float diffuseStrength = 0.5;
@@ -118,39 +117,29 @@ class SpecularMaterial(Material):
 					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 					specular = specularStrength * spec * light.color;
 					
-					avgLight = avgLight + (diffuse + specular);
-				}else{//light has no values
-					numWorkingLights = numWorkingLights - 1;//counters the counter for numWorkingLights
+					totalLight = totalLight + (diffuse + specular);
 				}
-				//increment counter
-				numWorkingLights = numWorkingLights + 1;
 			}
 			
 			//take away ambient light
-			vec3 noAmbience = avgLight - ambient;
+			vec3 noAmbience = totalLight - ambient;
 			
-			//take away again, the result should be positive if there is more than the ambient amount of light;
+			//take away again, the result should be all positive if there is more than the ambient amount of light;
 			vec3 greaterThanAmbience = noAmbience - ambient;
-			
-			//take the average for comparison
-			greaterThanAmbience = greaterThanAmbience / numWorkingLights;
-			
-			//take the average of the lack of ambient light
-			noAmbience = noAmbience / numWorkingLights;
 			
 			
 			if(greaterThanAmbience.x > 0 && greaterThanAmbience.y > 0 && greaterThanAmbience.z > 0){
-				//take away ambience if it is brighter than the ambience, aka taking it away wont make a negative value
-				avgLight = noAmbience;
+				//take away ambience if it is brighter than the ambience, aka taking it away does not make it dimmer than the ambient.
+				totalLight = noAmbience;
 			}else{
 				//the light is dimmer without the ambient, so we need it.
-				avgLight = ambient;
+				totalLight = ambient;
 			}
 			
 			
 			//calculate color based on light results
-			//vec3 result = (ambient + avgLight) * objectColor;
-			vec3 result = avgLight * objectColor;
+			//vec3 result = (ambient + totalLight) * objectColor;
+			vec3 result = totalLight * objectColor;
 			//vec3 result = objectColor;
 			gl_FragColor = vec4(result, 1.0);
 		}
