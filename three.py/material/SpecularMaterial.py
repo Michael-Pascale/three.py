@@ -92,7 +92,7 @@ class SpecularMaterial(Material):
 				}else if (light.isDirectional){
 					//diffuse lighting
 					float diffuseStrength = 0.5;
-					lightDir = -light0.direction;
+					lightDir = -light.direction;
 					float diff = max(dot(norm, lightDir),0.0);
 					diffuse = diff * light.color * diffuseStrength;
 					
@@ -107,7 +107,7 @@ class SpecularMaterial(Material):
 				}else if(light.isPoint){
 					//diffuse
 					float diffuseStrength = 0.5;
-					lightDir = normalize(light0.position - FragPos);
+					lightDir = normalize(light.position - FragPos);
 					float diff = max(dot(norm, lightDir), 0.0);
 					diffuse = diff * light.color * diffuseStrength;
 					
