@@ -26,18 +26,18 @@ class TestSpecularSimple(Base):
 		self.scene = Scene()
 		
 		#add a point light to the screen
-		self.light = PointLight(color=[1,1,1], position = [3,2,0],isSpecular=1)
+		self.light = PointLight(position = [3,2,0], color=[1,1,1])
 		#self.light = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1],isSpecular=1)
 		self.scene.add(self.light)
 		self.scene.add(PointLightHelper(self.light, radius=0.1))
 		
-		ambience = AmbientLight(color=[1,1,1],strength=0.1)
+		ambience = AmbientLight(color=[1,1,1],strength=0.3)
 		self.scene.add(ambience)
 		
-		directionalLight = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1],isSpecular=1)
-		#pointLight = PointLight(color=[1,1,1], position = [3,2,0],isSpecular=1)
+		directionalLight = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1])
+		#pointLight = PointLight(color=[1,1,1], position = [3,2,0])
 		#self.scene.add(pointLight)
-		self.scene.add(directionalLight)
+		#self.scene.add(directionalLight)
 		
 		self.camera = PerspectiveCamera()
 		self.camera.transform.setPosition(0,1,6)
@@ -48,7 +48,8 @@ class TestSpecularSimple(Base):
 		#widthResolution = 16, heightResolution = 16
 		#problem with normals in BoxGeometry?
 		geometry = SphereGeometry()
-		material = SpecularMaterial(color=[0,1,0])
+		shinyTexture=OpenGLUtils.initializeTexture("images/mirror.jpg")
+		material = SpecularMaterial(color=[1,1,1], texture=shinyTexture)
 		self.mesh = Mesh(geometry,material)
 		
 		self.scene.add(self.mesh)

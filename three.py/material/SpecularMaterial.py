@@ -5,7 +5,7 @@ from material import Material
 #This material demonstrates specular lighting
 #tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
 class SpecularMaterial(Material):
-	def __init__(self, color=[1,1,1], alpha=1):
+	def __init__(self, color=[1,1,1], alpha=1, texture=None):
 		#Code for the vertex shader
 		
 		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
@@ -13,11 +13,12 @@ class SpecularMaterial(Material):
 		
 		vsCode = """
 		in vec3 vertexPosition;
-		in vec3 vertexUV;
+		in vec2 vertexUV;
 		in vec3 vertexNormal;
 		
 		out vec3 position;
 		out vec3 Normal;
+		out vec2 UV;
 		uniform mat4 projectionMatrix;
 		uniform mat4 viewMatrix;
 		uniform mat4 modelMatrix;
@@ -28,6 +29,7 @@ class SpecularMaterial(Material):
 			position = vec3( modelMatrix * vec4(vertexPosition, 1) );
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
 			//Normal = vertexNormal;
+			UV = vertexUV;
 			//This line seems inefficient
 			Normal = mat3(transpose(inverse(modelMatrix))) * vertexNormal;
 			FragPos = vec3(modelMatrix * vec4(vertexPosition, 1));
@@ -37,6 +39,7 @@ class SpecularMaterial(Material):
 		#code for the fragment shader
 		fsCode = """
 		in vec3 position;
+		in vec2 UV;
 		in vec3 Normal;
 		in vec3 FragPos;
 		
@@ -46,12 +49,15 @@ class SpecularMaterial(Material):
 		uniform vec3 color;
 		uniform float alpha;
 		
+		//uniforms for loading images
+		uniform bool useTexture;
+		uniform sampler2D image;
+		
 		//struct for the light objects
 		struct Light{
 			bool isAmbient;
 			bool isDirectional;
 			bool isPoint;
-			bool isSpecular;//should be mutually exclusive with isAmbient
 			
 			//used by all lights
 			float strength;
@@ -72,7 +78,12 @@ class SpecularMaterial(Material):
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
 			//vec3 objectColor = vec3(0.0,1.0,0.0);
-			vec3 objectColor = color;
+			//vec3 objectColor = color;
+			vec4 baseColor = vec4(color, alpha);
+			//change color according to texture
+			if(useTexture){
+				baseColor *= texture2D(image, UV);
+			}
 			
 			//variables to be used inside the loop
 			vec3 lightDir;
@@ -112,7 +123,7 @@ class SpecularMaterial(Material):
 					float diffuseStrength = 0.5;
 					lightDir = normalize(light.position - FragPos);
 					float diff = max(dot(norm, lightDir), 0.0);
-					diffuse = diff * light.color * diffuseStrength;
+					diffuse = diff * diffuseStrength * light.color;
 					
 					//specular
 					vec3 specular;
@@ -122,6 +133,8 @@ class SpecularMaterial(Material):
 					specular = specularStrength * spec * light.color;
 					
 					totalLight = totalLight + (diffuse + specular);
+					
+					//baseColor = vec4(1,0,0,1);
 				}
 			}
 			
@@ -131,21 +144,26 @@ class SpecularMaterial(Material):
 			//take away again, the result should be all positive if there is more than the ambient amount of light;
 			vec3 greaterThanAmbience = noAmbience - ambient;
 			
-			
-			if(greaterThanAmbience.x > 0 && greaterThanAmbience.y > 0 && greaterThanAmbience.z > 0){
-				//take away ambience if it is brighter than the ambience, aka taking it away does not make it dimmer than the ambient.
+			if(length(noAmbience) > length(ambient)){
 				totalLight = noAmbience;
 			}else{
-				//the light is dimmer without the ambient, so we need it.
 				totalLight = ambient;
 			}
+			//if(greaterThanAmbience.x > 0 && greaterThanAmbience.y > 0 && greaterThanAmbience.z > 0){
+			//	//take away ambience if it is brighter than the ambience, aka taking it away does not make it dimmer than the ambient.
+			//	totalLight = noAmbience;
+			//}else{
+			//	//the light is dimmer without the ambient, so we need it.
+			//	totalLight = ambient;
+			//}
 			
 			
 			//calculate color based on light results
 			//vec3 result = (ambient + totalLight) * objectColor;
-			vec3 result = totalLight * objectColor;
+			vec4 result = vec4(totalLight,1.0) * baseColor;
 			//vec3 result = objectColor;
-			gl_FragColor = vec4(result, alpha);
+			//gl_FragColor = vec4(result, alpha);
+			gl_FragColor = result;
 		}
 		"""
 		
@@ -155,6 +173,13 @@ class SpecularMaterial(Material):
 		# set default uniform values
 		self.setUniform( "vec3", "color", color )
 		self.setUniform( "float", "alpha", alpha )
+		
+		if texture is None:
+			self.setUniform("bool", "useTexture",0)
+			self.setUniform("sampler2D","image",-1)
+		else:
+			self.setUniform("bool","useTexture",1);
+			self.setUniform("sampler2D","image",texture)
 		
 		# set default render values
 		self.drawStyle = GL_TRIANGLES
