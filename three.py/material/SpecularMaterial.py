@@ -63,50 +63,78 @@ class SpecularMaterial(Material):
 		};
 		
 		uniform Light light0;//using nomenclature of three py for the lights
+		uniform Light light1;
+		uniform Light light2;
+		uniform Light light3;
 		
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
 			vec3 objectColor = vec3(0.0,1.0,0.0);
 			//ambient light
 			//vec3 lightPosition = vec3(0.0,3.0,4.0);
-			vec3 lightColor = vec3(1.0,1.0,1.0);
-			float ambientStrength = 0.2;
-			vec3 ambient = ambientStrength * lightColor;
+			//vec3 lightColor = vec3(1.0,1.0,1.0);
+			//float ambientStrength = 0.2;
+			//vec3 ambient = ambientStrength * lightColor;
 			
-			//point light(currently only 1)(diffuse)
+			//variables to be used inside the loop
 			vec3 lightDir;
 			vec3 diffuse;
 			vec3 norm = normalize(Normal);
-			if(light0.isPoint){
-				float diffuseStrength = 0.5;
-				lightDir = normalize(light0.position - FragPos);
-				float diff = max(dot(norm, lightDir), 0.0);
-				diffuse = diff * lightColor * diffuseStrength;
-			}else if(light0.isDirectional){
-				float diffuseStrength = 0.5;
-				lightDir = -light0.direction;
-				float diff = max(dot(norm, lightDir),0.0);
-				diffuse = diff * lightColor * diffuseStrength;
-			}else{
-				diffuse = vec3(1.0,1.0,0.0);
+			
+			vec3 avgLight = vec3(0.0,0.0,0.0);//the average of all the diffuse and specular lights in the scene
+			Light lightArray[4] = {light0, light1, light2, light3};//array for the lights
+			int numWorkingLights = 0;
+			for(int n = 0;n < 4; n++){
+				//get the light
+				Light light = lightArray[n];
+				if(light.isAmbient){
+					avgLight = avgLight + (light.strength * light.color);
+				}else if (light.isDirectional){
+					//diffuse lighting
+					float diffuseStrength = 0.5;
+					lightDir = -light0.direction;
+					float diff = max(dot(norm, lightDir),0.0);
+					diffuse = diff * light.color * diffuseStrength;
+					
+					//specular
+					vec3 specular;
+					float specularStrength = 0.5;
+					//vec3 viewDir = normalize(viewPos - FragPos);
+					vec3 reflectDir = reflect(-lightDir, norm);
+					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+					specular = specularStrength * spec * light.color;
+					
+					avgLight = avgLight + (diffuse + specular);
+				}else if(light.isPoint){
+					//diffuse
+					float diffuseStrength = 0.5;
+					lightDir = normalize(light0.position - FragPos);
+					float diff = max(dot(norm, lightDir), 0.0);
+					diffuse = diff * light.color * diffuseStrength;
+					
+					//specular
+					vec3 specular;
+					float specularStrength = 0.5;
+					//vec3 viewDir = normalize(viewPos - FragPos);
+					vec3 reflectDir = reflect(-lightDir, norm);
+					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+					specular = specularStrength * spec * light.color;
+					
+					avgLight = avgLight + (diffuse + specular);
+				}else{//light has no values
+					numWorkingLights = numWorkingLights - 1;//counters the counter for numWorkingLights
+				}
+				numWorkingLights = numWorkingLights + 1;
 			}
 			
-			//specular light
-			vec3 specular;
-			if(light0.isSpecular){
-				float specularStrength = 0.5;
-				//vec3 viewDir = normalize(viewPos - FragPos);
-				vec3 reflectDir = reflect(-lightDir, norm);
-				float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-				specular = specularStrength * spec * lightColor;
-				//objectColor = lightDir;
-				//objectColor = vec3(1.0,0.0,0.0);
-			}else{
-				specular = vec3(0.0,0.0,0.0);
-			}
+			//properly calculate the average amount of light
+			avgLight = avgLight / numWorkingLights;
+			
+			
 			
 			//calculate color based on light results
-			vec3 result = (ambient + diffuse + specular) * objectColor;
+			//vec3 result = (ambient + avgLight) * objectColor;
+			vec3 result = avgLight * objectColor;
 			//vec3 result = objectColor;
 			gl_FragColor = vec4(result, 1.0);
 		}
