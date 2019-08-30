@@ -42,7 +42,6 @@ class SpecularMaterial(Material):
 		
 		uniform vec3 viewPos;
 		uniform vec3 viewDir;
-		//uniform vec3 lightPosition;
 		
 		//struct for the light objects
 		struct Light{
@@ -70,11 +69,6 @@ class SpecularMaterial(Material):
 		void main(){
 			//TODO: move declared variables to uniforms when convenient/needed
 			vec3 objectColor = vec3(0.0,1.0,0.0);
-			//ambient light
-			//vec3 lightPosition = vec3(0.0,3.0,4.0);
-			//vec3 lightColor = vec3(1.0,1.0,1.0);
-			//float ambientStrength = 0.2;
-			//vec3 ambient = ambientStrength * lightColor;
 			
 			//variables to be used inside the loop
 			vec3 lightDir;
@@ -84,11 +78,17 @@ class SpecularMaterial(Material):
 			vec3 avgLight = vec3(0.0,0.0,0.0);//the average of all the diffuse and specular lights in the scene
 			Light lightArray[4] = {light0, light1, light2, light3};//array for the lights
 			int numWorkingLights = 0;
+			//store the ambient light seperately, if the object is lit more than the ambience, take it away
+			vec3 ambient = vec3(0.0,0.0,0.0);
 			for(int n = 0;n < 4; n++){
 				//get the light
 				Light light = lightArray[n];
 				if(light.isAmbient){
 					avgLight = avgLight + (light.strength * light.color);
+					//save value in ambient, for later calculation
+					ambient = light.strength * light.color;
+					//take 1 away from working lights, ambient should not count
+					numWorkingLights = numWorkingLights - 1;
 				}else if (light.isDirectional){
 					//diffuse lighting
 					float diffuseStrength = 0.5;
@@ -99,7 +99,6 @@ class SpecularMaterial(Material):
 					//specular
 					vec3 specular;
 					float specularStrength = 0.5;
-					//vec3 viewDir = normalize(viewPos - FragPos);
 					vec3 reflectDir = reflect(-lightDir, norm);
 					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 					specular = specularStrength * spec * light.color;
@@ -115,7 +114,6 @@ class SpecularMaterial(Material):
 					//specular
 					vec3 specular;
 					float specularStrength = 0.5;
-					//vec3 viewDir = normalize(viewPos - FragPos);
 					vec3 reflectDir = reflect(-lightDir, norm);
 					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 					specular = specularStrength * spec * light.color;
@@ -124,12 +122,30 @@ class SpecularMaterial(Material):
 				}else{//light has no values
 					numWorkingLights = numWorkingLights - 1;//counters the counter for numWorkingLights
 				}
+				//increment counter
 				numWorkingLights = numWorkingLights + 1;
 			}
 			
-			//properly calculate the average amount of light
-			avgLight = avgLight / numWorkingLights;
+			//take away ambient light
+			vec3 noAmbience = avgLight - ambient;
 			
+			//take away again, the result should be positive if there is more than the ambient amount of light;
+			vec3 greaterThanAmbience = noAmbience - ambient;
+			
+			//take the average for comparison
+			greaterThanAmbience = greaterThanAmbience / numWorkingLights;
+			
+			//take the average of the lack of ambient light
+			noAmbience = noAmbience / numWorkingLights;
+			
+			
+			if(greaterThanAmbience.x > 0 && greaterThanAmbience.y > 0 && greaterThanAmbience.z > 0){
+				//take away ambience if it is brighter than the ambience, aka taking it away wont make a negative value
+				avgLight = noAmbience;
+			}else{
+				//the light is dimmer without the ambient, so we need it.
+				avgLight = ambient;
+			}
 			
 			
 			//calculate color based on light results

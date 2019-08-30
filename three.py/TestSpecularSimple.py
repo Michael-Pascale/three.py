@@ -31,6 +31,14 @@ class TestSpecularSimple(Base):
 		self.scene.add(self.light)
 		self.scene.add(PointLightHelper(self.light, radius=0.1))
 		
+		ambience = AmbientLight(color=[1,1,1],strength=0.1)
+		self.scene.add(ambience)
+		
+		#directionalLight = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1],isSpecular=1)
+		#pointLight = PointLight(color=[1,1,1], position = [3,2,0],isSpecular=1)
+		#self.scene.add(pointLight)
+		#self.scene.add(directionalLight)
+		
 		self.camera = PerspectiveCamera()
 		self.camera.transform.setPosition(0,1,6)
 		self.camera.transform.lookAt(0,0,0)
