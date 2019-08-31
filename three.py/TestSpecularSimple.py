@@ -31,7 +31,7 @@ class TestSpecularSimple(Base):
 		self.scene.add(self.light)
 		self.scene.add(PointLightHelper(self.light, radius=0.1))
 		
-		ambience = AmbientLight(color=[1,1,1],strength=0.3)
+		ambience = AmbientLight(color=[1,1,1],strength=0.05)
 		self.scene.add(ambience)
 		
 		directionalLight = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1])
@@ -47,12 +47,15 @@ class TestSpecularSimple(Base):
 		
 		#widthResolution = 16, heightResolution = 16
 		#problem with normals in BoxGeometry?
-		geometry = SphereGeometry()
-		shinyTexture=OpenGLUtils.initializeTexture("images/mirror.jpg")
-		material = SpecularMaterial(color=[1,1,1], texture=shinyTexture)
+		geometry = OBJGeometry('models/fireflower.obj')
+		shinyTexture=OpenGLUtils.initializeTexture("models/fireflower.png")
+		material = SpecularMaterial(color=[1,1,1], texture=shinyTexture, isSpecular=1, useFog = 1, fogColor=[1,1,1])
 		self.mesh = Mesh(geometry,material)
 		
 		self.scene.add(self.mesh)
+		
+		self.mesh.transform.scaleUniform(0.0005)
+		self.mesh.transform.translate(y=-1)
 		
 		
 		#light position uniform

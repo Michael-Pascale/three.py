@@ -5,7 +5,7 @@ from material import Material
 #This material demonstrates specular lighting
 #tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
 class SpecularMaterial(Material):
-	def __init__(self, color=[1,1,1], alpha=1, texture=None):
+	def __init__(self, color=[1,1,1], alpha=1, texture=None, isSpecular=0, useFog=0, fogStartDistance=5, fogEndDistance=15, fogColor=[1,1,1]):
 		#Code for the vertex shader
 		
 		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
@@ -25,9 +25,12 @@ class SpecularMaterial(Material):
 		
 		out vec3 FragPos;
 		
+		out float cameraDistance;
+		
 		void main(){
 			position = vec3( modelMatrix * vec4(vertexPosition, 1) );
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
+			cameraDistance=gl_Position.w;
 			//Normal = vertexNormal;
 			UV = vertexUV;
 			//This line seems inefficient
@@ -52,6 +55,18 @@ class SpecularMaterial(Material):
 		//uniforms for loading images
 		uniform bool useTexture;
 		uniform sampler2D image;
+		
+		//uniforms for enabling/disabling different properties of the shader
+		uniform bool isSpecular;
+		uniform bool useFog;
+		
+		//fog calculation
+		uniform vec3 fogColor;
+		uniform float fogStartDistance;
+		uniform float fogEndDistance;
+		in float cameraDistance;
+		
+		
 		
 		//struct for the light objects
 		struct Light{
@@ -112,10 +127,15 @@ class SpecularMaterial(Material):
 					
 					//specular
 					vec3 specular;
-					float specularStrength = 0.5;
-					vec3 reflectDir = reflect(-lightDir, norm);
-					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-					specular = specularStrength * spec * light.color;
+					
+					if(isSpecular){
+						float specularStrength = 0.5;
+						vec3 reflectDir = reflect(-lightDir, norm);
+						float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
+						specular = specularStrength * spec * light.color;
+					}else{
+						specular = vec3(0,0,0);
+					}
 					
 					totalLight = totalLight + (diffuse + specular);
 				}else if(light.isPoint){
@@ -127,10 +147,15 @@ class SpecularMaterial(Material):
 					
 					//specular
 					vec3 specular;
-					float specularStrength = 0.5;
-					vec3 reflectDir = reflect(-lightDir, norm);
-					float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-					specular = specularStrength * spec * light.color;
+					
+					if(isSpecular){
+						float specularStrength = 0.5;
+						vec3 reflectDir = reflect(-lightDir, norm);
+						float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+						specular = specularStrength * spec * light.color;
+					}else{
+						specular = vec3(0,0,0);
+					}
 					
 					totalLight = totalLight + (diffuse + specular);
 					
@@ -158,9 +183,18 @@ class SpecularMaterial(Material):
 			//}
 			
 			
+			
+			
 			//calculate color based on light results
 			//vec3 result = (ambient + totalLight) * objectColor;
 			vec4 result = vec4(totalLight,1.0) * baseColor;
+			
+			//add fog effect if necessary
+			if(useFog){
+				float fogFactor = clamp((fogEndDistance - cameraDistance)/(fogEndDistance - fogStartDistance),0.0,1.0);
+				result = mix(vec4(fogColor,1.0),result, fogFactor);
+			}
+			
 			//vec3 result = objectColor;
 			//gl_FragColor = vec4(result, alpha);
 			gl_FragColor = result;
@@ -173,6 +207,14 @@ class SpecularMaterial(Material):
 		# set default uniform values
 		self.setUniform( "vec3", "color", color )
 		self.setUniform( "float", "alpha", alpha )
+		
+		#fog
+		self.setUniform( "float", "fogStartDistance", fogStartDistance )
+		self.setUniform( "float", "fogEndDistance", fogEndDistance )
+		self.setUniform( "vec3", "fogColor", fogColor )
+		self.setUniform( "bool", "useFog", useFog )
+		
+		self.setUniform("bool","isSpecular", isSpecular)
 		
 		if texture is None:
 			self.setUniform("bool", "useTexture",0)
