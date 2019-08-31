@@ -2,7 +2,7 @@ from core import Base, Renderer, Scene, RenderTarget, Mesh, FirstPersonControlle
 from cameras import PerspectiveCamera
 from lights import AmbientLight, DirectionalLight
 from geometry import QuadGeometry, SphereGeometry, BoxGeometry
-from material import SurfaceBasicMaterial, SurfaceLightMaterial, SpecularMaterial
+from material import *
 from mathutils import Matrix
 from helpers import DirectionalLightHelper, OrthographicCameraHelper
 
@@ -48,16 +48,16 @@ class TestShadows(Base):
 
         geo = QuadGeometry(width=4,height=4)
         #mat = SurfaceLightMaterial(texture=gridTexture)
-        mat = SpecularMaterial(texture=gridTexture)
+        mat = PascaleSurfaceBasicMaterial(texture=gridTexture)
         
-        floor = Mesh( geo, SpecularMaterial(texture=gridTexture) )
+        floor = Mesh( geo, PascaleSurfaceBasicMaterial(texture=gridTexture) )
         floor.transform.rotateX(-3.14/2)        
         floor.setReceiveShadow()
         self.scene.add( floor )
 
         # illustrate the contents of the shadowMap
         backWall = Mesh(geo,
-            SpecularMaterial(texture=directionalLight.shadowRenderTarget.textureID))
+            PascaleSurfaceBasicMaterial(texture=directionalLight.shadowRenderTarget.textureID))
         backWall.transform.translate(0,2,-2)
         self.scene.add(backWall)
 

@@ -6,6 +6,9 @@ from material.SurfaceLightMaterial import *
 from material.SurfacePhongMaterial import *
 from material.SpecularMaterialBasic import *
 from material.SpecularMaterial import *
+from material.PascaleSurfaceBasicMaterial import *
+from material.PascaleSurfaceLambertMaterial import *
+from material.PascaleSurfacePhongMaterial import *
 
 # Line materials
 from material.LineBasicMaterial import *

@@ -54,7 +54,7 @@ class TestSpecularSimple(Base):
 		#geometry = OBJGeometry('models/fireflower.obj')
 		shinyTexture=OpenGLUtils.initializeTexture("models/fireflower.png")
 		discoTexture= OpenGLUtils.initializeTexture('images/color-grid.png')
-		material = SpecularMaterial(color=[1,1,1], texture=discoTexture, isSpecular=1, useFog = 1, fogColor=[1,1,1],useLight=1)
+		material = PascaleSurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
 		self.mesh = Mesh(geometry,material)
 		self.mesh.setCastShadow(True)
 		
@@ -67,7 +67,7 @@ class TestSpecularSimple(Base):
 		floor_geometry = QuadGeometry(width=10,height=10)
 		#floor_geometry = BoxGeometry()
 		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
-		floor_material = SpecularMaterial(texture=floor_texture,isSpecular=0)
+		floor_material = PascaleSurfaceBasicMaterial(texture=floor_texture)
 		floor = Mesh(floor_geometry, floor_material)
 		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
 		#floor.transform.scaleUniform(10)
