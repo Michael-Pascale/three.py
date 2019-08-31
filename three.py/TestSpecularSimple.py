@@ -53,7 +53,7 @@ class TestSpecularSimple(Base):
 		geometry = SphereGeometry()
 		#geometry = OBJGeometry('models/fireflower.obj')
 		shinyTexture=OpenGLUtils.initializeTexture("models/fireflower.png")
-		discoTexture= OpenGLUtils.initializeTexture('images/color-grid.png')
+		discoTexture= OpenGLUtils.initializeTexture('images/mirror.jpg')
 		material = PascaleSurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
 		self.mesh = Mesh(geometry,material)
 		self.mesh.setCastShadow(True)
