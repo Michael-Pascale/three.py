@@ -35,9 +35,11 @@ class TestSpecularSimple(Base):
 		self.scene.add(ambience)
 		
 		directionalLight = DirectionalLight(color=[1,1,1], position = [3,2,0],direction=[-1,-1,-1])
+		directionalLight.enableShadows(strength=0.5)
+		directionalLight.shadowCamera.setViewRegion(left=-5,right=5,top=5,bottom=-5,near=10,far=0)
 		#pointLight = PointLight(color=[1,1,1], position = [3,2,0])
 		#self.scene.add(pointLight)
-		#self.scene.add(directionalLight)
+		self.scene.add(directionalLight)
 		
 		self.camera = PerspectiveCamera()
 		self.camera.transform.setPosition(0,1,6)
@@ -51,11 +53,24 @@ class TestSpecularSimple(Base):
 		shinyTexture=OpenGLUtils.initializeTexture("models/fireflower.png")
 		material = SpecularMaterial(color=[1,1,1], texture=shinyTexture, isSpecular=1, useFog = 1, fogColor=[1,1,1])
 		self.mesh = Mesh(geometry,material)
+		self.mesh.setCastShadow()
 		
 		self.scene.add(self.mesh)
 		
 		self.mesh.transform.scaleUniform(0.0005)
 		self.mesh.transform.translate(y=-1)
+		
+		#add a floor to the scene
+		floor_geometry = QuadGeometry(width=10,height=10)
+		#floor_geometry = BoxGeometry()
+		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
+		floor_material = SpecularMaterial(texture=floor_texture,isSpecular=1)
+		floor = Mesh(floor_geometry, floor_material)
+		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
+		#floor.transform.scaleUniform(10)
+		floor.transform.translate(y=-2)
+		floor.setReceiveShadow()
+		self.scene.add(floor)
 		
 		
 		#light position uniform

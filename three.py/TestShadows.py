@@ -2,7 +2,7 @@ from core import Base, Renderer, Scene, RenderTarget, Mesh, FirstPersonControlle
 from cameras import PerspectiveCamera
 from lights import AmbientLight, DirectionalLight
 from geometry import QuadGeometry, SphereGeometry, BoxGeometry
-from material import SurfaceBasicMaterial, SurfaceLightMaterial
+from material import SurfaceBasicMaterial, SurfaceLightMaterial, SpecularMaterial
 from mathutils import Matrix
 from helpers import DirectionalLightHelper, OrthographicCameraHelper
 
@@ -47,16 +47,17 @@ class TestShadows(Base):
         gridTexture  = OpenGLUtils.initializeTexture("images/color-grid.png")
 
         geo = QuadGeometry(width=4,height=4)
-        mat = SurfaceLightMaterial(texture=gridTexture)
+        #mat = SurfaceLightMaterial(texture=gridTexture)
+        mat = SpecularMaterial(texture=gridTexture)
         
-        floor = Mesh( geo, SurfaceLightMaterial(texture=gridTexture) )
+        floor = Mesh( geo, SpecularMaterial(texture=gridTexture) )
         floor.transform.rotateX(-3.14/2)        
         floor.setReceiveShadow()
         self.scene.add( floor )
 
         # illustrate the contents of the shadowMap
         backWall = Mesh(geo,
-            SurfaceBasicMaterial(texture=directionalLight.shadowRenderTarget.textureID))
+            SpecularMaterial(texture=directionalLight.shadowRenderTarget.textureID))
         backWall.transform.translate(0,2,-2)
         self.scene.add(backWall)
 

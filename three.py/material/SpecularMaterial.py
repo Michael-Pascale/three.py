@@ -5,7 +5,7 @@ from material import Material
 #This material demonstrates specular lighting
 #tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
 class SpecularMaterial(Material):
-	def __init__(self, color=[1,1,1], alpha=1, texture=None, isSpecular=0, useFog=0, fogStartDistance=5, fogEndDistance=15, fogColor=[1,1,1]):
+	def __init__(self, color=[1,1,1], alpha=1, texture=None, isSpecular=0, useFog=0, fogStartDistance=5, fogEndDistance=15, fogColor=[1,1,1], recieveShadow=0):
 		#Code for the vertex shader
 		
 		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
@@ -27,12 +27,21 @@ class SpecularMaterial(Material):
 		
 		out float cameraDistance;
 		
+		//shadow stuff
+		uniform bool recieveShadow;
+		uniform mat4 shadowProjectionMatrix;
+		uniform mat4 shadowViewMatrix;
+		out vec4 positionFromShadowLight;
+		
 		void main(){
 			position = vec3( modelMatrix * vec4(vertexPosition, 1) );
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
 			cameraDistance=gl_Position.w;
 			//Normal = vertexNormal;
 			UV = vertexUV;
+			if(recieveShadow){
+				positionFromShadowLight = shadowProjectionMatrix * shadowViewMatrix * modelMatrix * vec4(vertexPosition,1);
+			}
 			//This line seems inefficient
 			Normal = mat3(transpose(inverse(modelMatrix))) * vertexNormal;
 			FragPos = vec3(modelMatrix * vec4(vertexPosition, 1));
@@ -59,12 +68,21 @@ class SpecularMaterial(Material):
 		//uniforms for enabling/disabling different properties of the shader
 		uniform bool isSpecular;
 		uniform bool useFog;
+		uniform bool recieveShadow;
 		
 		//fog calculation
 		uniform vec3 fogColor;
 		uniform float fogStartDistance;
 		uniform float fogEndDistance;
 		in float cameraDistance;
+		
+		
+		//shadowCalculation
+		in vec4 positionFromShadowLight;
+		uniform sampler2D shadowMap;
+		uniform float shadowStrength;
+		uniform float shadowBias;
+		uniform vec3 shadowLightDirection;
 		
 		
 		
@@ -163,6 +181,21 @@ class SpecularMaterial(Material):
 				}
 			}
 			
+			//calculate shadows
+			if(recieveShadow){
+				//norm is unitNormal
+				float cosAngle = dot(norm, shadowLightDirection);
+				bool facingLight = (cosAngle < -0.05);
+				
+				vec3 shadowCoord = (positionFromShadowLight.xyz / positionFromShadowLight.w) / 2.0 + 0.5;
+				float closestDistanceToLight = texture2D(shadowMap, shadowCoord.xy).r;
+				float fragmentDistanceToLight = shadowCoord.z;
+				if(facingLight && fragmentDistanceToLight > closestDistanceToLight + shadowBias){
+					baseColor *= vec4(shadowStrength,shadowStrength, shadowStrength,1.0);
+					//baseColor = vec4(1,1,1,1);
+				}
+			}
+			
 			//take away ambient light
 			vec3 noAmbience = totalLight - ambient;
 			
@@ -215,6 +248,7 @@ class SpecularMaterial(Material):
 		self.setUniform( "bool", "useFog", useFog )
 		
 		self.setUniform("bool","isSpecular", isSpecular)
+		self.setUniform("bool","recieveShadow", recieveShadow)
 		
 		if texture is None:
 			self.setUniform("bool", "useTexture",0)
