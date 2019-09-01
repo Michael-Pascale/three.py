@@ -56,7 +56,7 @@ class TestReflectivePlane(Base):
 		#add a floor to the scene
 		floor_geometry = QuadGeometry(width=10,height=10)
 		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
-		floor_material = WaterMaterial(color=[0,0,1], clippingPlane=[0,-1,0,-2])
+		floor_material = PascaleSurfaceBasicMaterial(color=[0,0,1])
 		floor = Mesh(floor_geometry, floor_material)
 		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
 		floor.transform.translate(y=-2)
