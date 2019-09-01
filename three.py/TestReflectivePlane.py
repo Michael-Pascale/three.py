@@ -75,7 +75,7 @@ class TestReflectivePlane(Base):
 		self.gui_mesh.transform.translate(x=-3)
 		self.mirror_cam = PerspectiveCamera()
 		gui_mesh_pos = self.gui_mesh.transform.getPosition()
-		self.mirror_cam.transform.setPosition(gui_mesh_pos[0],gui_mesh_pos[1],gui_mesh_pos[2] + 0.25)
+		self.mirror_cam.transform.setPosition(gui_mesh_pos[0],gui_mesh_pos[1],gui_mesh_pos[2] + 0.05)
 		self.camera_pos = self.camera.transform.getPosition()
 		self.mirror_cam.transform.lookAt(self.camera_pos[0],self.camera_pos[1],self.camera_pos[2])
 		#hard coded normal for now.
