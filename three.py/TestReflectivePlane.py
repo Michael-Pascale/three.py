@@ -11,7 +11,7 @@ import numpy as np
 import math
 
 #This demo demonstrates the use of the new basic material, with speculaer flags activated
-class TestSpecularSimple(Base):
+class TestReflectivePlane(Base):
 	def initialize(self):
 		
 		self.setWindowTitle('Specular Light Demo')
@@ -49,22 +49,31 @@ class TestSpecularSimple(Base):
 		discoTexture= OpenGLUtils.initializeTexture('images/mirror.jpg')
 		material = PascaleSurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
 		self.mesh = Mesh(geometry,material)
-		self.mesh.setCastShadow(True)
+		#self.mesh.setCastShadow(True)
 		
 		self.scene.add(self.mesh)
-		
-		self.mesh.transform.translate(y=-1)
 		
 		#add a floor to the scene
 		floor_geometry = QuadGeometry(width=10,height=10)
 		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
-		floor_material = PascaleSurfaceBasicMaterial(texture=floor_texture)
+		floor_material = ReflectiveMaterial(color=[0,0,1])
 		floor = Mesh(floor_geometry, floor_material)
 		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
 		floor.transform.translate(y=-2)
-		floor.setReceiveShadow(True)
+		#floor.setReceiveShadow(True)
 		self.scene.add(floor)
 		
+		#add something under the floor
+		spheremesh = Mesh(geometry, PascaleSurfaceLambertMaterial())
+		self.scene.add(spheremesh)
+		spheremesh.transform.translate(y=-5, x=-3)
+		
+		
+		#add something of a gui element
+		self.gui_render_target = RenderTarget.RenderTarget()
+		self.gui_mesh = Mesh(QuadGeometry(),ReflectiveMaterial(texture=self.gui_render_target.textureID))
+		self.gui_mesh.transform.translate(x=-3)
+		self.scene.add(self.gui_mesh)
 		
 	def update(self):
 		self.cameraControls.update()
@@ -82,9 +91,12 @@ class TestSpecularSimple(Base):
 			size = self.input.getWindowSize()
 			self.camera.setAspectRatio(size["width"]/size["height"])
 			self.renderer.setViewportSize(size["width"],size["height"])
+			
 		
+		self.renderer.render(self.scene,self.camera,self.gui_render_target)
 		self.renderer.render(self.scene,self.camera)
+		#self.renderer.render(self.gui_mesh,self.camera)
 	
-TestSpecularSimple().run()
+TestReflectivePlane().run()
 	
 	

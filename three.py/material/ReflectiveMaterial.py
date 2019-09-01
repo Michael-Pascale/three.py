@@ -2,12 +2,14 @@ from OpenGL.GL import *
 from core import OpenGLUtils
 from material import Material
 
-#This material replaces the old basic material, and now includes support for specular lighting
+#This material demonstrates specular lighting
 #tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
-class PascaleSurfaceBasicMaterial(Material):
+class ReflectiveMaterial(Material):
 	def __init__(self, color=[1,1,1], alpha=1, texture=None, isSpecular=0, useFog=0, fogStartDistance=5, fogEndDistance=15, fogColor=[1,1,1],useLight=0):
 		#Code for the vertex shader
 		
+		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
+		#rather than simple uniforms only
 		
 		vsCode = """
 		in vec3 vertexPosition;

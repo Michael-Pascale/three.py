@@ -23,11 +23,11 @@ class TestRenderTarget(Base):
         self.cameraControls = FirstPersonController(self.input, self.camera)
 
         skyTexture  = OpenGLUtils.initializeTexture("images/skysphere.jpg")
-        sky = Mesh( SphereGeometry(200, 64,64), SurfaceBasicMaterial(texture=skyTexture) )
+        sky = Mesh( SphereGeometry(200, 64,64), PascaleSurfaceBasicMaterial(texture=skyTexture) )
         self.scene.add(sky)
 
         gridTexture = OpenGLUtils.initializeTexture("images/color-grid.png")
-        self.sphere = Mesh( SphereGeometry(), SurfaceBasicMaterial(texture=gridTexture) )
+        self.sphere = Mesh( SphereGeometry(), PascaleSurfaceBasicMaterial(texture=gridTexture) )
         self.sphere.transform.setPosition(-1.2,0,0)
         self.scene.add(self.sphere)
         
@@ -39,7 +39,7 @@ class TestRenderTarget(Base):
         self.skycam.transform.setPosition(0, 5, 2)
         self.skycam.transform.lookAt(0,0,0)
         self.renderTarget = RenderTarget.RenderTarget(2048,2048)
-        self.quad = Mesh( QuadGeometry(), SurfaceBasicMaterial(texture=self.renderTarget.textureID) )
+        self.quad = Mesh( QuadGeometry(), PascaleSurfaceBasicMaterial(texture=self.renderTarget.textureID) )
         self.quad.transform.setPosition(1.2,0,0)
         self.scene.add( self.quad )
         

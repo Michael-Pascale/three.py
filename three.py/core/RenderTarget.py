@@ -42,4 +42,13 @@ class RenderTarget(object):
         # Always check that our framebuffer is ok
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE):
             raise Exception("Framebuffer status error")
-        
+
+
+    def createDepthTexture(self):
+        texture = glGenTextures()
+        glBindTexture(GL_TEXTURE_2D, texture)
+        glTexImage2D(GL_TEXTURE_2D, 0 , GL_DEPTH_COMPONENT,width,height,
+                     0,GL_DEPTH_COMPONENT,GL_FLOAT,None)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glFrameBufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,texture,0)
