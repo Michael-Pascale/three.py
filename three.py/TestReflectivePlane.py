@@ -56,7 +56,7 @@ class TestReflectivePlane(Base):
 		#add a floor to the scene
 		floor_geometry = QuadGeometry(width=10,height=10)
 		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
-		floor_material = ReflectiveMaterial(color=[0,0,1])
+		floor_material = WaterMaterial(color=[0,0,1], clippingPlane=[0,-1,0,-2])
 		floor = Mesh(floor_geometry, floor_material)
 		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
 		floor.transform.translate(y=-2)
@@ -66,12 +66,12 @@ class TestReflectivePlane(Base):
 		#add something under the floor
 		spheremesh = Mesh(geometry, PascaleSurfaceLambertMaterial())
 		self.scene.add(spheremesh)
-		spheremesh.transform.translate(y=-5, x=-3)
+		spheremesh.transform.translate(y=-5, x=-3, z=0)
 		
 		
 		#add something of a gui element
 		self.gui_render_target = RenderTarget.RenderTarget()
-		self.gui_mesh = Mesh(QuadGeometry(),ReflectiveMaterial(texture=self.gui_render_target.textureID))
+		self.gui_mesh = Mesh(QuadGeometry(),ReflectiveMaterial(texture=self.gui_render_target.depthTextureID))
 		self.gui_mesh.transform.translate(x=-3)
 		self.scene.add(self.gui_mesh)
 		

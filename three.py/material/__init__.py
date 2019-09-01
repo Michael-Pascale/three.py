@@ -10,6 +10,7 @@ from material.PascaleSurfaceBasicMaterial import *
 from material.PascaleSurfaceLambertMaterial import *
 from material.PascaleSurfacePhongMaterial import *
 from material.ReflectiveMaterial import *
+from material.WaterMaterial import *
 
 # Line materials
 from material.LineBasicMaterial import *

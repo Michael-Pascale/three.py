@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+from OpenGL.GL import *
 
 from core import Input
 
@@ -26,6 +27,7 @@ class Base(object):
         self.deltaTime = 0
         self.input = Input()
         self.running = True
+        
 
     # set window title
     def setWindowTitle(self, text):
@@ -51,6 +53,8 @@ class Base(object):
         self.initialize()
         
         while self.running:
+            #enable first clipping plane(using this for water)
+            glEnable(GL_CLIP_PLANE0)
         
             # update input state (down, pressed, up)
             self.input.update()

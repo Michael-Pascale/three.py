@@ -33,6 +33,8 @@ class PascaleSurfaceBasicMaterial(Material):
 		out vec4 positionFromShadowLight;
 		
 		void main(){
+			//set clip distance
+			//gl_ClipDistance[0] = -1;
 			position = vec3( modelMatrix * vec4(vertexPosition, 1) );
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
 			cameraDistance=gl_Position.w;

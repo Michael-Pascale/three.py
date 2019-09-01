@@ -4,8 +4,8 @@ from material import Material
 
 #This material demonstrates specular lighting
 #tutorial found online courtesy (https://learnopengl.com/Lighting/Basic-Lighting)
-class ReflectiveMaterial(Material):
-	def __init__(self, color=[1,1,1], alpha=1, texture=None, isSpecular=0, useFog=0, fogStartDistance=5, fogEndDistance=15, fogColor=[1,1,1],useLight=0):
+class WaterMaterial(Material):
+	def __init__(self, color=[1,1,1], alpha=1, texture=None, isSpecular=0, useFog=0, fogStartDistance=5, fogEndDistance=15, fogColor=[1,1,1],useLight=0, clippingPlane=[0,-1,0,20]):
 		#Code for the vertex shader
 		
 		#These shaders hope to improve on the basic specular light by using the light struct and built in lights from three py
@@ -34,11 +34,15 @@ class ReflectiveMaterial(Material):
 		uniform mat4 shadowViewMatrix;
 		out vec4 positionFromShadowLight;
 		
-		void main(){
+		//water stuff
+		//TODO: have this as an option for the water material
+		uniform vec4 plane;
 		
-			
+		void main(){			
 			position = vec3( modelMatrix * vec4(vertexPosition, 1) );
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
+			//add clipping
+			gl_ClipDistance[0] = dot(gl_Position, plane);
 			cameraDistance=gl_Position.w;
 			UV = vertexUV;
 			if(receiveShadow){
@@ -247,6 +251,9 @@ class ReflectiveMaterial(Material):
 		self.setUniform( "float", "fogEndDistance", fogEndDistance )
 		self.setUniform( "vec3", "fogColor", fogColor )
 		self.setUniform( "bool", "useFog", useFog )
+		
+		#clipping
+		self.setUniform("vec4","plane",clippingPlane)
 		
 		self.setUniform("bool","isSpecular", isSpecular)
 		

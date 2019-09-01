@@ -32,6 +32,16 @@ class RenderTarget(object):
         # configure framebuffer to store to this texture
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, self.textureID, 0)
         
+        #generate depth texture
+        self.depthTextureID = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, self.depthTextureID)
+        glTexImage2D(GL_TEXTURE_2D, 0 , GL_DEPTH_COMPONENT32,self.width,self.height,
+                     0,GL_DEPTH_COMPONENT,GL_FLOAT,None)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE,GL_NONE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glFramebufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,self.depthTextureID,0)
+
         # Since a frame buffer only stores color information by default,
         #   need to generate a buffer to store depth information while rendering the scene
         self.depthBufferID = glGenRenderbuffers(1)
@@ -42,13 +52,3 @@ class RenderTarget(object):
         # Always check that our framebuffer is ok
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE):
             raise Exception("Framebuffer status error")
-
-
-    def createDepthTexture(self):
-        texture = glGenTextures()
-        glBindTexture(GL_TEXTURE_2D, texture)
-        glTexImage2D(GL_TEXTURE_2D, 0 , GL_DEPTH_COMPONENT,width,height,
-                     0,GL_DEPTH_COMPONENT,GL_FLOAT,None)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glFrameBufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,texture,0)
