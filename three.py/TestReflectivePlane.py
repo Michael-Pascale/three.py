@@ -71,7 +71,7 @@ class TestReflectivePlane(Base):
 		
 		#add a mirror
 		self.gui_render_target = RenderTarget.RenderTarget()
-		self.gui_mesh = Mesh(QuadGeometry(),ReflectiveMaterial(texture=self.gui_render_target.textureID))
+		self.gui_mesh = Mesh(QuadGeometry(width=2,height=2),ReflectiveMaterial(texture=self.gui_render_target.textureID))
 		self.gui_mesh.transform.translate(x=-3)
 		self.mirror_cam = PerspectiveCamera()
 		gui_mesh_pos = self.gui_mesh.transform.getPosition()
@@ -90,12 +90,14 @@ class TestReflectivePlane(Base):
 		self.mesh.material.setUniform('vec3','viewPos',self.camera.transform.getPosition())
 		
 		#update mirror camera position
+		'''
 		self.camera_pos = self.camera.transform.getPosition()
 		self.distance_vec = np.subtract(self.camera_pos, self.mirror_cam.transform.getPosition())
 		mirror_cam_pos = self.mirror_cam.transform.getPosition()
 		self.reflection = self.distance_vec - np.multiply(np.multiply((np.dot(self.distance_vec,self.normal)),2),self.normal)
-		self.mirror_cam.transform.lookAt(mirror_cam_pos[0]+self.reflection[0],mirror_cam_pos[1]+self.reflection[1],mirror_cam_pos[2]+self.reflection[2])
-		
+		self.reflection = self.reflection * 2
+		self.mirror_cam.transform.lookAt(-self.reflection[0],-self.reflection[1],-self.reflection[2])
+		'''
 		
 		#get the cameras relative forward
 		#This code is necssary for the shader to work, so it may be worthwhile to get this out of the main render loop somehow
@@ -108,9 +110,19 @@ class TestReflectivePlane(Base):
 			size = self.input.getWindowSize()
 			self.camera.setAspectRatio(size["width"]/size["height"])
 			self.renderer.setViewportSize(size["width"],size["height"])
-			
 		
-		self.renderer.render(self.scene,self.mirror_cam,self.gui_render_target)
+		#move camera to behind the mirror for the first rendering pass
+		distance = abs(self.camera.transform.getPosition()[2] -  self.gui_mesh.transform.getPosition()[2])
+		self.camera.transform.translate(z=-2*distance)
+		gui_mesh_pos = self.gui_mesh.transform.getPosition()
+		#get old rotation matrix for resetting camera position
+		M = self.camera.transform.getRotationMatrix()
+		self.camera.transform.lookAt(gui_mesh_pos[0],gui_mesh_pos[1],gui_mesh_pos[2])
+		self.renderer.render(self.scene,self.camera,self.gui_render_target)
+		
+		#move the camera back
+		self.camera.transform.translate(z=2*distance)
+		self.camera.transform.setRotationSubmatrix(M)
 		self.renderer.render(self.scene,self.camera)
 		#self.renderer.render(self.gui_mesh,self.camera)
 	

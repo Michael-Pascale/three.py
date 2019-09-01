@@ -121,7 +121,8 @@ class ReflectiveMaterial(Material):
 			vec4 baseColor = vec4(color, alpha);
 			//change color according to texture
 			if(useTexture){
-				baseColor *= texture2D(image, UV);
+				vec2 inverseXUV = vec2(-UV.x,UV.y);
+				baseColor *= texture2D(image, inverseXUV);
 			}
 			
 			//variables to be used inside the loop
