@@ -66,18 +66,35 @@ class TestReflectivePlane(Base):
 		#add something under the floor
 		spheremesh = Mesh(geometry, PascaleSurfaceLambertMaterial())
 		self.scene.add(spheremesh)
-		spheremesh.transform.translate(y=-5, x=-3, z=0)
+		spheremesh.transform.translate(y=0, x=-4, z=2)
 		
 		
-		#add something of a gui element
+		#add a mirror
 		self.gui_render_target = RenderTarget.RenderTarget()
-		self.gui_mesh = Mesh(QuadGeometry(),ReflectiveMaterial(texture=self.gui_render_target.depthTextureID))
+		self.gui_mesh = Mesh(QuadGeometry(),ReflectiveMaterial(texture=self.gui_render_target.textureID))
 		self.gui_mesh.transform.translate(x=-3)
+		self.mirror_cam = PerspectiveCamera()
+		gui_mesh_pos = self.gui_mesh.transform.getPosition()
+		self.mirror_cam.transform.setPosition(gui_mesh_pos[0],gui_mesh_pos[1],gui_mesh_pos[2] + 0.25)
+		self.camera_pos = self.camera.transform.getPosition()
+		self.mirror_cam.transform.lookAt(self.camera_pos[0],self.camera_pos[1],self.camera_pos[2])
+		#hard coded normal for now.
+		self.normal = [0,0,1]
+		self.distance_vec = np.subtract(self.camera_pos, self.mirror_cam.transform.getPosition())
+		self.reflection = self.distance_vec - np.multiply(np.multiply((np.dot(self.distance_vec,self.normal)),2),self.normal)
+		self.mirror_cam.transform.lookAt(self.reflection[0],self.reflection[1],self.reflection[2])
 		self.scene.add(self.gui_mesh)
 		
 	def update(self):
 		self.cameraControls.update()
 		self.mesh.material.setUniform('vec3','viewPos',self.camera.transform.getPosition())
+		
+		#update mirror camera position
+		self.camera_pos = self.camera.transform.getPosition()
+		self.distance_vec = np.subtract(self.camera_pos, self.mirror_cam.transform.getPosition())
+		mirror_cam_pos = self.mirror_cam.transform.getPosition()
+		self.reflection = self.distance_vec - np.multiply(np.multiply((np.dot(self.distance_vec,self.normal)),2),self.normal)
+		self.mirror_cam.transform.lookAt(mirror_cam_pos[0]+self.reflection[0],mirror_cam_pos[1]+self.reflection[1],mirror_cam_pos[2]+self.reflection[2])
 		
 		
 		#get the cameras relative forward
@@ -93,7 +110,7 @@ class TestReflectivePlane(Base):
 			self.renderer.setViewportSize(size["width"],size["height"])
 			
 		
-		self.renderer.render(self.scene,self.camera,self.gui_render_target)
+		self.renderer.render(self.scene,self.mirror_cam,self.gui_render_target)
 		self.renderer.render(self.scene,self.camera)
 		#self.renderer.render(self.gui_mesh,self.camera)
 	
