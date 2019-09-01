@@ -31,8 +31,9 @@ class RenderTarget(object):
         
         # configure framebuffer to store to this texture
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, self.textureID, 0)
-        
+
         #generate depth texture
+        
         self.depthTextureID = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, self.depthTextureID)
         glTexImage2D(GL_TEXTURE_2D, 0 , GL_DEPTH_COMPONENT32,self.width,self.height,
@@ -41,6 +42,7 @@ class RenderTarget(object):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glFramebufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,self.depthTextureID,0)
+        
 
         # Since a frame buffer only stores color information by default,
         #   need to generate a buffer to store depth information while rendering the scene

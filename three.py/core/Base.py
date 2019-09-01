@@ -54,7 +54,7 @@ class Base(object):
         
         while self.running:
             #enable first clipping plane(using this for water)
-            glEnable(GL_CLIP_PLANE0)
+            #glEnable(GL_CLIP_PLANE0)
         
             # update input state (down, pressed, up)
             self.input.update()
