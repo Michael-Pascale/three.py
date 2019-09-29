@@ -78,7 +78,7 @@ class JugglingPaths(Base):
         self.handCurveL = Multicurve( [CurveFactory.makeLineSegment(G,D), curve2] )
         self.handCurveR = Multicurve( [CurveFactory.makeLineSegment(A,J), curve4] )
 
-        # draw ball curve path for illustration
+        # draw ball curve path  for illustration
         path = Mesh(CurveGeometry(self.ballCurve), LineDashedMaterial(color=[1,1,0.5], dashLength=0.05, gapLength=0.05, lineWidth=1))
         self.scene.add(path)
 
