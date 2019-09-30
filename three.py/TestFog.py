@@ -6,6 +6,7 @@ from helpers import *
 
 import random
 
+### NEEDS TO BE REFACTORED BECAUSE OF NEW SHADERS
 class TestFog(Base):
     
     def initialize(self):

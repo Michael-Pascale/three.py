@@ -48,16 +48,16 @@ class TestShadows(Base):
 
         geo = QuadGeometry(width=4,height=4)
         #mat = SurfaceLightMaterial(texture=gridTexture)
-        mat = PascaleSurfaceBasicMaterial(texture=gridTexture)
+        mat = SurfaceBasicMaterial(texture=gridTexture)
         
-        floor = Mesh( geo, PascaleSurfaceBasicMaterial(texture=gridTexture) )
+        floor = Mesh( geo, SurfaceBasicMaterial(texture=gridTexture) )
         floor.transform.rotateX(-3.14/2)        
         floor.setReceiveShadow()
         self.scene.add( floor )
 
         # illustrate the contents of the shadowMap
         backWall = Mesh(geo,
-            PascaleSurfaceBasicMaterial(texture=directionalLight.shadowRenderTarget.textureID))
+            SurfaceBasicMaterial(texture=directionalLight.shadowRenderTarget.textureID))
         backWall.transform.translate(0,2,-2)
         self.scene.add(backWall)
 

@@ -2,13 +2,8 @@ from material.Material import *
 
 # Surface materials
 from material.SurfaceBasicMaterial import *
-from material.SurfaceLightMaterial import *
+from material.SurfaceLambertMaterial import *
 from material.SurfacePhongMaterial import *
-from material.SpecularMaterialBasic import *
-from material.SpecularMaterial import *
-from material.PascaleSurfaceBasicMaterial import *
-from material.PascaleSurfaceLambertMaterial import *
-from material.PascaleSurfacePhongMaterial import *
 from material.ReflectiveMaterial import *
 
 # Line materials

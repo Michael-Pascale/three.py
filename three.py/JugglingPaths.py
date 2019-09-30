@@ -36,16 +36,16 @@ class JugglingPaths(Base):
         self.scene.add(floorMesh)
 
         ballGeometry = SphereGeometry(radius=0.1)
-        self.ball1 = Mesh( ballGeometry, SurfaceLightMaterial(color=[1,0.2,0.2]) )
-        self.ball3 = Mesh( ballGeometry, SurfaceLightMaterial(color=[0.2,1,0.2]) )
-        self.ball2 = Mesh( ballGeometry, SurfaceLightMaterial(color=[0.2,0.2,1]) )
+        self.ball1 = Mesh( ballGeometry, SurfaceLambertMaterial(objColor=[1,0.2,0.2]) )
+        self.ball3 = Mesh( ballGeometry, SurfaceLambertMaterial(objColor=[0.2,1,0.2]) )
+        self.ball2 = Mesh( ballGeometry, SurfaceLambertMaterial(objColor=[0.2,0.2,1]) )
         self.scene.add(self.ball1)
         self.scene.add(self.ball2)
         self.scene.add(self.ball3)
 
         handGeometry = BoxGeometry(width=0.4, height=0.1, depth=0.4)
-        self.handL = Mesh( handGeometry, SurfaceLightMaterial(color=[0.9,0.9,0.9]) )
-        self.handR = Mesh( handGeometry, SurfaceLightMaterial(color=[0.9,0.9,0.9]) )
+        self.handL = Mesh( handGeometry, SurfaceLambertMaterial(objColor=[0.9,0.9,0.9]) )
+        self.handR = Mesh( handGeometry, SurfaceLambertMaterial(objColor=[0.9,0.9,0.9]) )
         self.scene.add(self.handL)
         self.scene.add(self.handR)
         

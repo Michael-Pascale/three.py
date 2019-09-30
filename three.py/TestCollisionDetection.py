@@ -34,7 +34,7 @@ class TestCollisionDetection(Base):
         #seperate geometries for different sized spheres
         geometry = SphereGeometry()
         geometry2 = SphereGeometry(radius=5)
-        material = SurfaceLightMaterial()
+        material = SurfaceLambertMaterial()
 
         #Bigger sphere the others will fall onto
         self.Mesh1 = ComponentMesh(geometry2,material)

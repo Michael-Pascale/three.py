@@ -31,7 +31,7 @@ class TestTextImage(Base):
                                  width=256, height=256,
                                  alignHorizontal="CENTER", alignVertical="MIDDLE")
         messageTexture = OpenGLUtils.initializeSurface(messageImage.surface)
-        lightMaterial = SurfaceLightMaterial( texture=messageTexture )
+        lightMaterial = SurfaceLambertMaterial( objTexture=messageTexture )
         self.cube = Mesh( BoxGeometry(), lightMaterial )
         self.scene.add(self.cube)        
 

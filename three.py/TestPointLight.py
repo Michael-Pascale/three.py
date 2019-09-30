@@ -26,7 +26,7 @@ class TestPointLight(Base):
         self.scene.add( ambientLight )
 
         moonTexture  = OpenGLUtils.initializeTexture("images/moon.jpg")
-        moon = Mesh( SphereGeometry(), SurfaceLightMaterial( color=[1,1,1], texture=moonTexture ) )
+        moon = Mesh( SphereGeometry(), SurfaceLambertMaterial( objColor=[1,1,1], objTexture=moonTexture ) )
         self.scene.add(moon)        
 
         self.redLight = PointLight(color=[1,0,0], position=[1,1,1])

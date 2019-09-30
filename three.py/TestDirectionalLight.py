@@ -31,7 +31,7 @@ class TestDirectionalLight(Base):
         self.scene.add( DirectionalLightHelper(self.directionalLight) )
         
         gridTexture  = OpenGLUtils.initializeTexture("images/color-grid.png")
-        lightMaterial = SurfaceLightMaterial( color=[1,1,1], texture=gridTexture );
+        lightMaterial = SurfaceLambertMaterial( objColor=[1,1,1], objTexture=gridTexture );
         
         self.cube = Mesh( BoxGeometry(), lightMaterial )
         self.cube.transform.translate(1.5, 0, 0, Matrix.LOCAL)        

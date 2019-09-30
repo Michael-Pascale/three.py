@@ -30,13 +30,14 @@ class TestSurfaceMaterials(Base):
         sphereGeom = SphereGeometry(radius=0.9)
         
         gridTexture  = OpenGLUtils.initializeTexture("images/color-grid.png")
-        gridMaterial = SurfaceLightMaterial(texture=gridTexture)
+        gridMaterial = SurfaceLambertMaterial(objTexture=gridTexture)
 
         wireMaterial = SurfaceBasicMaterial(color=[0.8,0.8,0.8], wireframe=True, lineWidth=2)
 
-        lightMaterial = SurfaceLightMaterial(color=[0.5,0.5,1.0])
-        
-        rainbowMaterial = SurfaceLightMaterial(useVertexColors=True)
+        lightMaterial = SurfaceLambertMaterial(objColor=[0.5,0.5,1.0])
+
+        #useVertexColors currently not supported in this material.
+        rainbowMaterial = SurfaceLambertMaterial()
         vertexColorData = []
         for i in range(sphereGeom.vertexCount):
             color = [random(), random(), random()]

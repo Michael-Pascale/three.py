@@ -31,8 +31,6 @@ class TestSpecularSimple(Base):
 		directionalLight = DirectionalLight(color=[1,1,1], position=[2,2,0], direction=[-2,-1,0])
 		directionalLight.enableShadows(strength=0.5)
 		directionalLight.shadowCamera.setViewRegion(left=-2,right=2,top=2,bottom=-5,near=10,far=3)
-		#pointLight = PointLight(color=[1,1,1], position = [3,2,0])
-		#self.scene.add(pointLight)
 		self.scene.add(directionalLight)
 		
 		self.camera = PerspectiveCamera()
@@ -41,13 +39,9 @@ class TestSpecularSimple(Base):
 		self.camera.transform.setPosition(0,1,5)
 		self.cameraControls = FirstPersonController(self.input,self.camera)
 		
-		#widthResolution = 16, heightResolution = 16
-		#problem with normals in BoxGeometry?
 		geometry = SphereGeometry()
-		#geometry = OBJGeometry('models/fireflower.obj')
-		shinyTexture=OpenGLUtils.initializeTexture("models/fireflower.png")
 		discoTexture= OpenGLUtils.initializeTexture('images/mirror.jpg')
-		material = PascaleSurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
+		material = SurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
 		self.mesh = Mesh(geometry,material)
 		self.mesh.setCastShadow(True)
 		
@@ -58,7 +52,7 @@ class TestSpecularSimple(Base):
 		#add a floor to the scene
 		floor_geometry = QuadGeometry(width=10,height=10)
 		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
-		floor_material = PascaleSurfaceBasicMaterial(texture=floor_texture)
+		floor_material = SurfaceBasicMaterial(texture=floor_texture)
 		floor = Mesh(floor_geometry, floor_material)
 		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
 		floor.transform.translate(y=-2)

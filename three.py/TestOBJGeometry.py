@@ -37,20 +37,20 @@ class TestOBJGeometry(Base):
         
         mushroomTexture = OpenGLUtils.initializeTexture("models/mushroom.png")
         self.mushroom = Mesh(OBJGeometry("models/mushroom.obj", smoothNormals=True),
-                             SurfaceLightMaterial(texture=mushroomTexture))
+                             SurfaceLambertMaterial(objTexture=mushroomTexture))
         self.mushroom.transform.translate(-3,0,0)
         self.mushroom.transform.scaleUniform(0.8)
         self.scene.add(self.mushroom)
         
         fireflowerTexture = OpenGLUtils.initializeTexture("models/fireflower.png")
         self.fireflower = Mesh(OBJGeometry("models/fireflower.obj", smoothNormals=False),
-                               SurfaceLightMaterial(texture=fireflowerTexture))
+                               SurfaceLambertMaterial(objTexture=fireflowerTexture))
         self.fireflower.transform.scaleUniform(0.0005)
         self.scene.add(self.fireflower)
         
         starTexture = OpenGLUtils.initializeTexture("models/star.png")
         self.star = Mesh(OBJGeometry("models/star.obj", smoothNormals=False),
-                               SurfaceLightMaterial(texture=starTexture))
+                               SurfaceLambertMaterial(objTexture=starTexture))
         self.star.transform.translate(3,0,0)
         self.star.transform.scaleUniform(0.0005)
         self.scene.add(self.star)

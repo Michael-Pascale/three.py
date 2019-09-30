@@ -31,7 +31,7 @@ class TestHelpers(Base):
         self.scene.add(floorMesh)
         
         gridTexture  = OpenGLUtils.initializeTexture("images/color-grid.png")
-        gridMaterial = SurfaceLightMaterial(texture=gridTexture)
+        gridMaterial = SurfaceLambertMaterial(objTexture=gridTexture)
         self.cylinder = Mesh( CylinderGeometry(radiusTop=0.25, radiusBottom=1, heightSegments=6), gridMaterial )
         self.cylinder.transform.translate(0, 1, 0, Matrix.LOCAL)
         self.scene.add(self.cylinder)

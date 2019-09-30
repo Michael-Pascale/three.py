@@ -34,7 +34,7 @@ class TestCollisionsBeta(Base):
         
         geometry = SphereGeometry()
         geometry2 = SphereGeometry(radius=5)
-        material = SurfaceLightMaterial()
+        material = SurfaceLambertMaterial()
         self.Mesh1 = ComponentMesh(geometry,material)
         sphere = Sphere(radius=1,center=self.Mesh1.transform.getPosition())
         self.Mesh1.addComponent("Sphere",sphere)

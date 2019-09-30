@@ -35,7 +35,7 @@ class TestLightPerformance(Base):
 
         boxGeo = BoxGeometry(width=1, height=1, depth=1)
         boxTexture = OpenGLUtils.initializeTexture("images/color-grid.png")
-        boxMat = SurfaceLightMaterial(texture=boxTexture)
+        boxMat = SurfaceLambertMaterial(objTexture=boxTexture)
 
         for i in range(100):            
             box = Mesh(boxGeo, boxMat)

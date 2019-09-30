@@ -7,6 +7,7 @@ from geometry import *
 from material import *
 from helpers import *
 
+#Doesnt work
 class TestReflections(Base):
     
     def initialize(self):
@@ -28,7 +29,7 @@ class TestReflections(Base):
         self.time = 0
         self.cubePosition = self.translationFunction(self.time)
 
-        self.renderTarget = RenderTarget(1024,768)
+        self.renderTarget = RenderTarget.RenderTarget(1024,768)
         self.firstReflectionCamera = PerspectiveCamera()
         self.firstReflectionCamera.transform.setPosition(self.cubePosition[0],self.cubePosition[1],
                                             self.cubePosition[2],Matrix.GLOBAL)

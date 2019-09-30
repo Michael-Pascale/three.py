@@ -30,11 +30,11 @@ class TestPostprocessing1(Base):
         crateTexture  = OpenGLUtils.initializeTexture("images/crate.jpg")
         ballTexture  = OpenGLUtils.initializeTexture("images/basketball.png")
         
-        self.cube = Mesh( BoxGeometry(), SurfaceLightMaterial(texture=crateTexture) )
+        self.cube = Mesh( BoxGeometry(), SurfaceLambertMaterial(objTexture=crateTexture) )
         self.cube.transform.translate(1.5, 0, 0, Matrix.LOCAL)        
         self.scene.add(self.cube)
         
-        self.sphere = Mesh( SphereGeometry(), SurfaceLightMaterial(texture=ballTexture) )
+        self.sphere = Mesh( SphereGeometry(), SurfaceLambertMaterial(objTexture=ballTexture) )
         self.sphere.transform.translate(-1.5, 0, 0, Matrix.LOCAL)
         self.scene.add(self.sphere)
 

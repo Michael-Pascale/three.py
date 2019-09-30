@@ -10,7 +10,7 @@ import random
 import numpy as np
 import math
 
-#This demo demonstrates the use of the new basic material, with speculaer flags activated
+#Does not work
 class TestReflectivePlane(Base):
 	def initialize(self):
 		
@@ -47,7 +47,7 @@ class TestReflectivePlane(Base):
 		#geometry = OBJGeometry('models/fireflower.obj')
 		shinyTexture=OpenGLUtils.initializeTexture("models/fireflower.png")
 		discoTexture= OpenGLUtils.initializeTexture('images/mirror.jpg')
-		material = PascaleSurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
+		material = SurfacePhongMaterial(objColor=[1,1,1], objTexture=discoTexture, usesFog = 1, fog_Color=[1,1,1])
 		self.mesh = Mesh(geometry,material)
 		#self.mesh.setCastShadow(True)
 		
@@ -56,7 +56,7 @@ class TestReflectivePlane(Base):
 		#add a floor to the scene
 		floor_geometry = QuadGeometry(width=10,height=10)
 		floor_texture = OpenGLUtils.initializeTexture('images/color-grid.png')
-		floor_material = PascaleSurfaceBasicMaterial(color=[0,0,1])
+		floor_material = SurfaceBasicMaterial(color=[0,0,1])
 		floor = Mesh(floor_geometry, floor_material)
 		floor.transform.rotateX(-1.57,Matrix.GLOBAL)
 		floor.transform.translate(y=-2)
@@ -64,7 +64,7 @@ class TestReflectivePlane(Base):
 		self.scene.add(floor)
 		
 		#add something under the floor
-		spheremesh = Mesh(geometry, PascaleSurfaceLambertMaterial())
+		spheremesh = Mesh(geometry, SurfaceLambertMaterial())
 		self.scene.add(spheremesh)
 		spheremesh.transform.translate(y=0, x=-4, z=2)
 		
