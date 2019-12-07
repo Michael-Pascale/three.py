@@ -27,3 +27,5 @@ from geometry.PolygonGeometry import *
 
 from geometry.OBJGeometry import *
 from geometry.OBJExtruder import *
+
+from geometry.QuadGridGeometry import *
