@@ -6,3 +6,4 @@ from helpers.DirectionalLightHelper import *
 from helpers.PointLightHelper import *
 from helpers.OrthographicCameraHelper import *
 from helpers.Pair import *
+from helpers.GridGroup import *

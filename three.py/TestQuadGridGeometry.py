@@ -28,11 +28,11 @@ class TestQuadGridGeometry(Base):
         self.scene.add(floorMesh)
 
         ## generate a QuadGridGeometry
-        self.gridGeo = QuadGridGeometry(xRes=2,yRes=2,sectors={
-            Pair(0,0):[1,2,4],
+        self.gridGeo = QuadGridGeometry(xRes=5,yRes=5,groups=[GridGroup({
+            Pair(4,0):[1,2,4],
             Pair(1,1):[4,3,2],
             Pair(1,0):[1,2,3],
-            Pair(0,1):[1,3,4]})
+            Pair(0,1):[1,3,4]})],xSize=5,ySize=5)
         material = SurfaceBasicMaterial()
         self.gridGeoMesh = Mesh(self.gridGeo,material)
         self.scene.add(self.gridGeoMesh)
