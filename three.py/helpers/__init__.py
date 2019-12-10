@@ -7,3 +7,4 @@ from helpers.PointLightHelper import *
 from helpers.OrthographicCameraHelper import *
 from helpers.Pair import *
 from helpers.GridGroup import *
+from helpers.MetaCircle import *

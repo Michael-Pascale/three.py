@@ -29,3 +29,5 @@ from geometry.OBJGeometry import *
 from geometry.OBJExtruder import *
 
 from geometry.QuadGridGeometry import *
+
+from geometry.MetaBallQuadGeometry import *
