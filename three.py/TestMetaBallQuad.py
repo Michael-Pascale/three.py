@@ -80,7 +80,7 @@ class TestQuadGridGeometry(Base):
                     #if(circle.inside_circle(x,y)):
                     #    self.gridGeo.fill_sector(x,y,False)
                 if(point_sum > 1):
-                    self.gridGeo.fill_sector(x,y,False)
+                    self.gridGeo.fill_sector(x,y,False,False)
         self.gridGeo.updateAttributes()
             
 

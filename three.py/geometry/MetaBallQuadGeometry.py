@@ -39,9 +39,10 @@ class MetaBallQuadGeometryBeta(Geometry):
         self.filledSectors = {}
         self.numSectors = 0
 
-    def fill_sector(self, x, y, update=True):
-        if([x,y] in self.filledSectors.values()):
-            return
+    def fill_sector(self, x, y, update=True, search=True):
+        if search:
+            if([x,y] in self.filledSectors.values()):
+                return
         
         A = [x*self.width-self.width/2,
              y*self.height - self.height/2,
