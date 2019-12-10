@@ -39,7 +39,7 @@ class MetaBallQuadGeometryBeta(Geometry):
         self.filledSectors = {}
         self.numSectors = 0
 
-    def fill_sector(self, x, y):
+    def fill_sector(self, x, y, update=True):
         if([x,y] in self.filledSectors.values()):
             return
         
@@ -83,14 +83,10 @@ class MetaBallQuadGeometryBeta(Geometry):
 
         self.filledSectors[self.numSectors] = [x,y]
         self.numSectors += 1
+        if update:
+            self.updateAttributes()
 
-        self.vertexCount = len( self.vertexPositionData )
-
-        self.updateAttribute("vertexPosition", self.vertexPositionData)
-        self.updateAttribute("vertexUV", self.vertexUVData)
-        self.updateAttribute("vertexNormal", self.vertexNormalData)
-
-    def remove_sector(self, x, y):
+    def remove_sector(self, x, y, update=True):
         if([x,y] not in self.filledSectors.values()):
             return False
         the_key = -1
@@ -109,11 +105,7 @@ class MetaBallQuadGeometryBeta(Geometry):
         del self.vertexPositionData[index:index+6]
         del self.vertexUVData[index:index+6]
         del self.vertexNormalData[index:index+6]
-        self.vertexCount = len( self.vertexPositionData )
-
-        self.updateAttribute("vertexPosition", self.vertexPositionData)
-        self.updateAttribute("vertexUV", self.vertexUVData)
-        self.updateAttribute("vertexNormal", self.vertexNormalData)
+        
 
         self.filledSectors.pop(the_key, None)
         self.numSectors -= 1
@@ -126,18 +118,33 @@ class MetaBallQuadGeometryBeta(Geometry):
                 new_dict[key-1] = value
 
         self.filledSectors = new_dict
+        if update:
+            self.updateAttributes()
+
+    def updateAttributes(self):
+        self.vertexCount = len( self.vertexPositionData )
+
+        self.updateAttribute("vertexPosition", self.vertexPositionData)
+        self.updateAttribute("vertexUV", self.vertexUVData)
+        self.updateAttribute("vertexNormal", self.vertexNormalData)
 
     def fill_all_sectors(self):
         ## re write to not update attributes
         for x in range(self.xRes):
             for y in range(self.yRes):
-                self.fill_sector(x,y)
+                self.fill_sector(x,y,False)
+        self.updateAttributes()
 
     def remove_all_sectors(self):
         ##rewrite to just delete all the data and then update attributes 
-        for x in range(self.xRes):
-            for y in range(self.yRes):
-                self.remove_sector(x,y)                
+        self.vertexPositionData = []
+        self.vertexUVData = []
+        self.vertexNormalData = []
+
+        self.filledSectors = {}
+        self.numSectors = 0
+
+        self.updateAttributes()
         
         
 

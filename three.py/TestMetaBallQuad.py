@@ -4,6 +4,7 @@ from geometry import *
 from material import *
 from helpers import *
 from random import randint
+from math import sin, cos
 
 class TestQuadGridGeometry(Base):
     
@@ -29,7 +30,7 @@ class TestQuadGridGeometry(Base):
         self.scene.add(floorMesh)
 
         ## generate a QuadGridGeometry
-        self.gridGeo = MetaBallQuadGeometryBeta(xRes=250,yRes=250)
+        self.gridGeo = MetaBallQuadGeometryBeta(xRes=50,yRes=50)
         self.gridGeo.fill_sector(2,3)
         self.gridGeo.fill_sector(2,4)
         self.gridGeo.remove_sector(2,3)
@@ -40,27 +41,52 @@ class TestQuadGridGeometry(Base):
         self.scene.add(self.gridGeoMesh)
 
         self.frameCounter = 0
+        self.circleList = []
+        self.circle = MetaCircle(25,12,5)
+        self.circleList.append(self.circle)
+        self.circleList.append(MetaCircle(25,7,6))
+        print(self.circleList)
+
+        self.time = 0
+        
 
     def testMetaQuadEfficiency(self):
         remove = randint(0,1)
-        x = randint(0,249)
-        y = randint(0,249)
+        x = randint(0,24)
+        y = randint(0,24)
         
         if remove:
             self.gridGeo.remove_sector(x,y)
         else:
-            pass
-            #self.gridGeo.fill_sector(x,y)
+            self.gridGeo.fill_sector(x,y)
             
         
     def update(self):
 
         self.cameraControls.update()
         self.frameCounter += 1
+        self.time += (1/60)
+        ax = int(sin(self.time)*20 + 25)
+        self.circle.set_position(ax, 12)
 
-        if self.frameCounter > 1:
+        #clear the list
+        self.gridGeo.remove_all_sectors()
+
+        for x in range(self.gridGeo.xRes):
+            for y in range(self.gridGeo.yRes):
+                point_sum = 0
+                for circle in self.circleList:
+                    point_sum += circle.get_value_of_point(x,y)
+                    #if(circle.inside_circle(x,y)):
+                    #    self.gridGeo.fill_sector(x,y,False)
+                if(point_sum > 1):
+                    self.gridGeo.fill_sector(x,y,False)
+        self.gridGeo.updateAttributes()
+            
+
+        if self.frameCounter > 0:
             self.frameCounter = 0
-            self.testMetaQuadEfficiency()
+            #self.testMetaQuadEfficiency()
 
         if self.input.resize():
             size = self.input.getWindowSize()
