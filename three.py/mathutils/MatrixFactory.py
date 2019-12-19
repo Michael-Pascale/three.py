@@ -94,6 +94,10 @@ class MatrixFactory(object):
                          [0, 0, -1, 0]])
 
     @staticmethod
+    def makeCopy(aMatrix):
+        return np.copy(aMatrix)
+
+    @staticmethod
     def makeOrthographic(left=-1, right=1, top=1, bottom=-1, far=1, near=-1):
         return np.array([[2/(right-left), 0, 0, -(right+left)/(right-left)], 
                          [0, 2/(top-bottom), 0, -(top+bottom)/(top-bottom)], 
