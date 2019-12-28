@@ -3,6 +3,7 @@ from cameras import *
 from geometry import *
 from material import *
 from helpers import *
+from math import pi
 
 class SphereWorld(Base):
     
@@ -19,6 +20,9 @@ class SphereWorld(Base):
 
         self.camera = PerspectiveCamera()
         self.camera.transform.setPosition(0, 1, 5)
+        cameraPositionVector = np.array([0,1,5])
+        cameraPositionVector = cameraPositionVector / np.linalg.norm(cameraPositionVector)
+        print(cameraPositionVector)
         self.camera.transform.lookAt(0, 0, 0)
         #self.cameraControls = FirstPersonController(self.input, self.camera)
 
@@ -32,6 +36,13 @@ class SphereWorld(Base):
         sphere_texture= OpenGLUtils.initializeTexture('images/earth.jpg')
         self.sphere = Mesh(SphereGeometry(),SurfaceBasicMaterial(texture=sphere_texture))
         self.scene.add(self.sphere)
+
+        self.player = Mesh(PrismGeometry(numberSides=3,height=0.25,radius=0.1),
+                           SurfaceBasicMaterial())
+        self.scene.add(self.player)
+        self.player.transform.setPosition(cameraPositionVector[0],cameraPositionVector[1],cameraPositionVector[2])
+        self.player.transform.rotateX(pi / 2, Matrix.LOCAL)
+        self.originalPlayerMatrix = MatrixFactory.makeCopy(self.player.transform.matrix)
         
         self.cameraController.add(self.camera)
 
@@ -41,28 +52,28 @@ class SphereWorld(Base):
         ## self.scene.add(floorMesh)
         self.x_speed = 0.01
         self.y_speed = 0.01
+
+        ## Setup a controller for the Mouse
+        ## self.mouseController = MouseControlAtPoint(self.cameraController, self.camera)
         
     def update(self):
 
         #self.cameraControls.update()
 
         if self.input.isKeyPressed(pygame.K_w):
-            print('w is pressed')
             self.cameraController.transform.rotateX(-self.x_speed, type=Matrix.LOCAL)
         if self.input.isKeyPressed(pygame.K_a):
-            print('a is pressed')
             self.cameraController.transform.rotateY(-self.y_speed, type=Matrix.LOCAL)
         if self.input.isKeyPressed(pygame.K_s):
-            print('s is pressed')
             self.cameraController.transform.rotateX(self.x_speed, type=Matrix.LOCAL)
         if self.input.isKeyPressed(pygame.K_d):
-            print('d is pressed')
             self.cameraController.transform.rotateY(self.y_speed, type=Matrix.LOCAL)
 
         ## Custom parent child multiplication. This makes the camera move relative to the camera controllers position,
         ## based on the original position, because using the current position causes previous transformations to overlap
         ## rather than stop when they are done.
         self.camera.transform.matrix = self.cameraController.transform.matrix @ self.originalCameraMatrix
+        self.player.transform.matrix = self.cameraController.transform.matrix @ self.originalPlayerMatrix
             
 
         if self.input.resize():
