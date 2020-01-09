@@ -4,6 +4,7 @@ from geometry import *
 from material import *
 from helpers import *
 from math import pi
+from game import *
 
 class SphereWorld(Base):
     
@@ -36,11 +37,15 @@ class SphereWorld(Base):
         sphere_texture= OpenGLUtils.initializeTexture('images/earth.jpg')
         self.sphere = Mesh(SphereGeometry(),SurfaceBasicMaterial(texture=sphere_texture))
         self.scene.add(self.sphere)
+        self.sphere.transform.scaleUniform(2)## change the size of the game world
 
         self.player = Mesh(PrismGeometry(numberSides=3,height=0.25,radius=0.1),
                            SurfaceBasicMaterial())
         self.scene.add(self.player)
-        self.player.transform.setPosition(cameraPositionVector[0],cameraPositionVector[1],cameraPositionVector[2])
+        playerPositionVector = cameraPositionVector * 2
+        self.player.transform.setPosition(playerPositionVector[0],
+                                          playerPositionVector[1],
+                                          playerPositionVector[2])
         self.player.transform.rotateX(pi / 2, Matrix.LOCAL)
         self.originalPlayerMatrix = MatrixFactory.makeCopy(self.player.transform.matrix)
         
